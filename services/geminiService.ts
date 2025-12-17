@@ -1,0 +1,1 @@
+export const sendMessageToGemini = async () => { return ""; }

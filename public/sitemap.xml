@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Homepage - Turkish -->
+  <url>
+    <loc>https://nexusbiotech.org/</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Homepage - English -->
+  <url>
+    <loc>https://nexusbiotech.org/en</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Engineering Solutions - Turkish -->
+  <url>
+    <loc>https://nexusbiotech.org/m%C3%BChendislik-%C3%A7%C3%B6z%C3%BCmleri</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/m%C3%BChendislik-%C3%A7%C3%B6z%C3%BCmleri"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en/engineering-solutions"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Engineering Solutions - English -->
+  <url>
+    <loc>https://nexusbiotech.org/en/engineering-solutions</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/m%C3%BChendislik-%C3%A7%C3%B6z%C3%BCmleri"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en/engineering-solutions"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Turnkey Projects - Turkish -->
+  <url>
+    <loc>https://nexusbiotech.org/anahtar-teslim-projeler</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/anahtar-teslim-projeler"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en/turnkey-projects"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Turnkey Projects - English -->
+  <url>
+    <loc>https://nexusbiotech.org/en/turnkey-projects</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/anahtar-teslim-projeler"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en/turnkey-projects"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Defense Industry Projects - Turkish -->
+  <url>
+    <loc>https://nexusbiotech.org/savunma-sanayi-projeleri</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/savunma-sanayi-projeleri"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en/defense-industry-projects"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Defense Industry Projects - English -->
+  <url>
+    <loc>https://nexusbiotech.org/en/defense-industry-projects</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/savunma-sanayi-projeleri"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en/defense-industry-projects"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Consulting and Project Management - Turkish -->
+  <url>
+    <loc>https://nexusbiotech.org/dan%C4%B1%C5%9Fmanl%C4%B1k-ve-proje-y%C3%B6netimi</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/dan%C4%B1%C5%9Fmanl%C4%B1k-ve-proje-y%C3%B6netimi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en/consulting-and-project-management"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Consulting and Project Management - English -->
+  <url>
+    <loc>https://nexusbiotech.org/en/consulting-and-project-management</loc>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://nexusbiotech.org/dan%C4%B1%C5%9Fmanl%C4%B1k-ve-proje-y%C3%B6netimi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://nexusbiotech.org/en/consulting-and-project-management"/>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+</urlset>
