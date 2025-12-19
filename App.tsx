@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -9,6 +9,7 @@ import DefenseSpace from './components/DefenseSpace';
 import Services from './components/Services';
 import Footer from './components/Footer';
 import SEOHead from './components/SEOHead';
+import LoadingScreen from './components/LoadingScreen';
 import Lenis from 'lenis';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
@@ -16,12 +17,69 @@ const BASE_URL = import.meta.env.BASE_URL || '/';
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
+  const videoLoadedRef = useRef(false);
 
   // Update HTML lang attribute based on route
   useEffect(() => {
     const htmlLang = location.pathname.startsWith('/en') ? 'en' : 'tr';
     document.documentElement.lang = htmlLang;
+  }, [location.pathname]);
+
+  // Track video loading
+  const handleVideoReady = () => {
+    videoLoadedRef.current = true;
+    setVideoLoaded(true);
+  };
+
+  // Load critical assets and track loading state
+  useEffect(() => {
+    setIsLoading(true);
+    videoLoadedRef.current = false;
+    setVideoLoaded(false);
+    
+    const assetsToLoad: Promise<void>[] = [];
+    
+    // Preload critical images from Technology section
+    const criticalImages = [
+      `${BASE_URL}assets/images/oasis.png`,
+      `${BASE_URL}assets/images/aether.png`,
+      `${BASE_URL}assets/images/terra.png`,
+    ];
+    
+    criticalImages.forEach(src => {
+      const imgLoadPromise = new Promise<void>((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve();
+        img.onerror = () => resolve(); // Continue even if image fails
+        img.src = src;
+      });
+      assetsToLoad.push(imgLoadPromise);
+    });
+    
+    // Wait for video to load (polling check)
+    const videoLoadPromise = new Promise<void>((resolve) => {
+      const maxWait = 10000; // Max 10 seconds
+      const startTime = Date.now();
+      const checkVideo = setInterval(() => {
+        if (videoLoadedRef.current || Date.now() - startTime > maxWait) {
+          clearInterval(checkVideo);
+          resolve();
+        }
+      }, 100);
+    });
+    assetsToLoad.push(videoLoadPromise);
+    
+    // Wait for all critical assets to load, with minimum display time for animation
+    const minDisplayTime = new Promise(resolve => setTimeout(resolve, 1500)); // Minimum 1.5s for animation
+    
+    Promise.all([
+      Promise.all(assetsToLoad),
+      minDisplayTime
+    ]).then(() => {
+      setIsLoading(false);
+    });
   }, [location.pathname]);
 
   useEffect(() => {
@@ -68,10 +126,12 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-nexus-copper selection:text-white font-tech text-white">
-      <SEOHead />
-      
-      {/* Global Background Video (Vertical Farming Theme) */}
-      <div className="fixed inset-0 z-0 select-none overflow-hidden bg-nexus-dark" aria-hidden="true">
+      {isLoading && <LoadingScreen />}
+      <div className={isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100 transition-opacity duration-500'}>
+        <SEOHead />
+        
+        {/* Global Background Video (Vertical Farming Theme) */}
+        <div className="fixed inset-0 z-0 select-none overflow-hidden bg-nexus-dark" aria-hidden="true">
         <div className="absolute inset-0 w-full h-full">
           <video 
             autoPlay 
@@ -81,8 +141,9 @@ const App: React.FC = () => {
             preload="auto"
             className={`w-full h-full object-cover -z-50 transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
             aria-hidden="true"
-            onLoadedData={() => setVideoLoaded(true)}
-            onCanPlay={() => setVideoLoaded(true)}
+            onLoadedData={handleVideoReady}
+            onCanPlay={handleVideoReady}
+            onCanPlayThrough={handleVideoReady}
           >
             <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
              {/* Fallback stock video of vertical farming/technology */}
@@ -118,7 +179,8 @@ const App: React.FC = () => {
         <Services />
       </main>
 
-      <Footer />
+        <Footer />
+      </div>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
+import LoadingScreen from '../components/LoadingScreen';
 import { useLanguage } from '../contexts/LanguageContext';
 import Lenis from 'lenis';
 
@@ -41,6 +42,7 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const lenisRef = useRef<Lenis | null>(null);
 
   // Helper function to prepend BASE_URL to paths starting with /
@@ -51,11 +53,15 @@ const ServicePage: React.FC<ServicePageProps> = ({
     return `${BASE_URL}${path}`;
   };
 
-  // Preload hero image when component mounts or route changes
+  // Load all assets and track loading state
   useEffect(() => {
-    setHeroImageLoaded(false); // Reset when route changes
+    setIsLoading(true);
+    setHeroImageLoaded(false);
+    
+    const assetsToLoad: Promise<void>[] = [];
+    
+    // Preload hero image
     if (heroBackgroundImage) {
-      // Helper to get asset path inline
       let imagePath: string | undefined;
       if (heroBackgroundImage.startsWith('http://') || heroBackgroundImage.startsWith('https://')) {
         imagePath = heroBackgroundImage;
@@ -66,17 +72,80 @@ const ServicePage: React.FC<ServicePageProps> = ({
       }
       
       if (imagePath) {
-        const img = new Image();
-        img.onload = () => setHeroImageLoaded(true);
-        img.onerror = () => setHeroImageLoaded(true); // Show content even if image fails
-        img.src = imagePath;
-      } else {
-        setHeroImageLoaded(true);
+        const heroImgPromise = new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            setHeroImageLoaded(true);
+            resolve();
+          };
+          img.onerror = () => {
+            setHeroImageLoaded(true);
+            resolve();
+          };
+          img.src = imagePath;
+        });
+        assetsToLoad.push(heroImgPromise);
       }
-    } else {
-      setHeroImageLoaded(true);
     }
-  }, [heroBackgroundImage, location.pathname]);
+    
+    // Preload feature images if provided
+    if (featureImages && featureImages.length > 0) {
+      featureImages.forEach(imgPath => {
+        let imagePath: string | undefined;
+        if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
+          imagePath = imgPath;
+        } else if (imgPath.startsWith('/')) {
+          imagePath = `${BASE_URL}${imgPath.substring(1)}`;
+        } else {
+          imagePath = `${BASE_URL}${imgPath}`;
+        }
+        
+        if (imagePath) {
+          const imgPromise = new Promise<void>((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            img.src = imagePath;
+          });
+          assetsToLoad.push(imgPromise);
+        }
+      });
+    }
+    
+    // Preload feature images from map if provided
+    if (featureImagesMap) {
+      Object.values(featureImagesMap).forEach(imgPath => {
+        let imagePath: string | undefined;
+        if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
+          imagePath = imgPath;
+        } else if (imgPath.startsWith('/')) {
+          imagePath = `${BASE_URL}${imgPath.substring(1)}`;
+        } else {
+          imagePath = `${BASE_URL}${imgPath}`;
+        }
+        
+        if (imagePath) {
+          const imgPromise = new Promise<void>((resolve) => {
+            const img = new Image();
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            img.src = imagePath;
+          });
+          assetsToLoad.push(imgPromise);
+        }
+      });
+    }
+    
+    // Wait for all assets to load, with minimum display time for animation
+    const minDisplayTime = new Promise(resolve => setTimeout(resolve, 1500));
+    
+    Promise.all([
+      Promise.all(assetsToLoad),
+      minDisplayTime
+    ]).then(() => {
+      setIsLoading(false);
+    });
+  }, [heroBackgroundImage, featureImages, featureImagesMap, location.pathname]);
 
   // Prevent browser scroll restoration
   useEffect(() => {
@@ -207,7 +276,9 @@ const ServicePage: React.FC<ServicePageProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col relative overflow-x-hidden ${selectionClass} font-tech ${textColorClass}`}>
-      <SEOHead 
+      {isLoading && <LoadingScreen />}
+      <div className={isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100 transition-opacity duration-500'}>
+        <SEOHead 
         titleKey={titleKey} 
         descriptionKey={subtitleKey}
         image={heroBackgroundImage}
@@ -425,9 +496,9 @@ const ServicePage: React.FC<ServicePageProps> = ({
         </section>
       </main>
 
-      <Footer />
+        <Footer />
 
-      {/* Contact Modal */}
+        {/* Contact Modal */}
       {isContactOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
@@ -458,6 +529,7 @@ const ServicePage: React.FC<ServicePageProps> = ({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };
