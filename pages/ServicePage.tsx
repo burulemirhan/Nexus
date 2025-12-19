@@ -187,9 +187,9 @@ const ServicePage: React.FC<ServicePageProps> = ({
               muted 
               playsInline
               className="w-full h-full object-cover -z-50"
-              poster="/assets/images/bg.png"
+              poster={`${import.meta.env.BASE_URL}assets/images/bg.png`}
             >
-              <source src="/assets/videos/bg.mp4" type="video/mp4" />
+              <source src={`${import.meta.env.BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
               <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
             </video>
           </div>

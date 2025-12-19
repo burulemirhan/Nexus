@@ -13,6 +13,8 @@ const TurnkeyProjects: React.FC = () => {
     ? ['service2.process1', 'service2.process2', 'service2.process3', 'service2.process4']
     : ['service2.process1', 'service2.process2', 'service2.process3', 'service2.process4'];
 
+  const baseUrl = import.meta.env.BASE_URL;
+  
   return (
     <ServicePage
       titleKey="services.service2.title"
@@ -21,7 +23,7 @@ const TurnkeyProjects: React.FC = () => {
       featuresKey={featuresKey}
       processKey={processKey}
       customBackground="white"
-      heroBackgroundImage="/assets/images/bg3.png"
+      heroBackgroundImage={`${baseUrl}assets/images/bg3.png`}
     />
   );
 };
