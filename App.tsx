@@ -9,16 +9,9 @@ import DefenseSpace from './components/DefenseSpace';
 import Services from './components/Services';
 import Footer from './components/Footer';
 import SEOHead from './components/SEOHead';
-import AssetPreloader from './components/AssetPreloader';
 import Lenis from 'lenis';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
-
-// Critical assets to preload for main page
-const CRITICAL_ASSETS = [
-  `${BASE_URL}assets/videos/bg.mp4`,
-  `${BASE_URL}assets/images/bg.png`, // Fallback poster
-];
 
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,10 +22,6 @@ const App: React.FC = () => {
     const htmlLang = location.pathname.startsWith('/en') ? 'en' : 'tr';
     document.documentElement.lang = htmlLang;
   }, [location.pathname]);
-
-  const handleAssetsLoaded = () => {
-    // Assets loaded, page will be shown by AssetPreloader
-  };
 
   useEffect(() => {
     // Initialize Lenis for smooth scrolling
@@ -77,9 +66,8 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <AssetPreloader assets={CRITICAL_ASSETS} onLoadComplete={handleAssetsLoaded}>
-      <div className="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-nexus-copper selection:text-white font-tech text-white">
-        <SEOHead />
+    <div className="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-nexus-copper selection:text-white font-tech text-white">
+      <SEOHead />
       
       {/* Global Background Video (Vertical Farming Theme) */}
       <div className="fixed inset-0 z-0 select-none overflow-hidden bg-nexus-dark" aria-hidden="true">
@@ -124,8 +112,7 @@ const App: React.FC = () => {
       </main>
 
       <Footer />
-      </div>
-    </AssetPreloader>
+    </div>
   );
 };
 

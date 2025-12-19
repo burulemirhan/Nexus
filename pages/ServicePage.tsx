@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
-import AssetPreloader from '../components/AssetPreloader';
 import { useLanguage } from '../contexts/LanguageContext';
 import Lenis from 'lenis';
 
@@ -49,15 +48,6 @@ const ServicePage: React.FC<ServicePageProps> = ({
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
     if (path.startsWith('/')) return `${BASE_URL}${path.substring(1)}`;
     return `${BASE_URL}${path}`;
-  };
-
-  // Collect critical assets to preload (hero background image)
-  const criticalAssets = heroBackgroundImage 
-    ? [getAssetPath(heroBackgroundImage) || ''].filter(Boolean)
-    : [];
-
-  const handleAssetsLoaded = () => {
-    // Assets loaded, page will be shown by AssetPreloader
   };
 
   // Prevent browser scroll restoration
@@ -188,13 +178,12 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const selectionClass = isWhiteBackground ? 'selection:bg-nexus-copper selection:text-black' : 'selection:bg-nexus-copper selection:text-white';
 
   return (
-    <AssetPreloader assets={criticalAssets} onLoadComplete={handleAssetsLoaded}>
-      <div className={`min-h-screen flex flex-col relative overflow-x-hidden ${selectionClass} font-tech ${textColorClass}`}>
-        <SEOHead 
-          titleKey={titleKey} 
-          descriptionKey={subtitleKey}
-          image={heroBackgroundImage}
-        />
+    <div className={`min-h-screen flex flex-col relative overflow-x-hidden ${selectionClass} font-tech ${textColorClass}`}>
+      <SEOHead 
+        titleKey={titleKey} 
+        descriptionKey={subtitleKey}
+        image={heroBackgroundImage}
+      />
       
       {/* Global Background */}
       {isWhiteBackground ? (
@@ -438,8 +427,7 @@ const ServicePage: React.FC<ServicePageProps> = ({
           </div>
         </div>
       )}
-      </div>
-    </AssetPreloader>
+    </div>
   );
 };
 
