@@ -46,6 +46,11 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const getAssetPath = (path: string | undefined): string | undefined => {
     if (!path) return path;
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    // If BASE_URL is '/', just return the path as-is if it starts with /
+    if (BASE_URL === '/') {
+      return path.startsWith('/') ? path : `/${path}`;
+    }
+    // Otherwise, prepend BASE_URL
     if (path.startsWith('/')) return `${BASE_URL}${path.substring(1)}`;
     return `${BASE_URL}${path}`;
   };
