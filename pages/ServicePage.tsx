@@ -3,8 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
-import LoadingScreen from '../components/LoadingScreen';
 import { useLanguage } from '../contexts/LanguageContext';
+import { preloadImage, preloadImages, preloadVideo } from '../utils/preloadAssets';
 import Lenis from 'lenis';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
@@ -41,7 +41,6 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
-  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const lenisRef = useRef<Lenis | null>(null);
 
@@ -53,99 +52,57 @@ const ServicePage: React.FC<ServicePageProps> = ({
     return `${BASE_URL}${path}`;
   };
 
-  // Load all assets and track loading state
+  // Preload critical assets (hero background image) before showing the page
   useEffect(() => {
-    setIsLoading(true);
-    setHeroImageLoaded(false);
-    
-    const assetsToLoad: Promise<void>[] = [];
-    
-    // Preload hero image
-    if (heroBackgroundImage) {
-      let imagePath: string | undefined;
-      if (heroBackgroundImage.startsWith('http://') || heroBackgroundImage.startsWith('https://')) {
-        imagePath = heroBackgroundImage;
-      } else if (heroBackgroundImage.startsWith('/')) {
-        imagePath = `${BASE_URL}${heroBackgroundImage.substring(1)}`;
-      } else {
-        imagePath = `${BASE_URL}${heroBackgroundImage}`;
-      }
-      
-      if (imagePath) {
-        const heroImgPromise = new Promise<void>((resolve) => {
-          const img = new Image();
-          img.onload = () => {
-            setHeroImageLoaded(true);
-            resolve();
-          };
-          img.onerror = () => {
-            setHeroImageLoaded(true);
-            resolve();
-          };
-          img.src = imagePath;
-        });
-        assetsToLoad.push(heroImgPromise);
-      }
-    }
-    
-    // Preload feature images if provided
-    if (featureImages && featureImages.length > 0) {
-      featureImages.forEach(imgPath => {
-        let imagePath: string | undefined;
-        if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
-          imagePath = imgPath;
-        } else if (imgPath.startsWith('/')) {
-          imagePath = `${BASE_URL}${imgPath.substring(1)}`;
-        } else {
-          imagePath = `${BASE_URL}${imgPath}`;
+    const loadCriticalAssets = async () => {
+      try {
+        const assetsToLoad: string[] = [];
+        
+        // Helper to prepend BASE_URL
+        const getPath = (path: string | undefined): string | undefined => {
+          if (!path) return path;
+          if (path.startsWith('http://') || path.startsWith('https://')) return path;
+          if (path.startsWith('/')) return `${BASE_URL}${path.substring(1)}`;
+          return `${BASE_URL}${path}`;
+        };
+        
+        // Preload hero background image if provided (MOST CRITICAL)
+        if (heroBackgroundImage) {
+          assetsToLoad.push(getPath(heroBackgroundImage)!);
         }
         
-        if (imagePath) {
-          const imgPromise = new Promise<void>((resolve) => {
-            const img = new Image();
-            img.onload = () => resolve();
-            img.onerror = () => resolve();
-            img.src = imagePath;
-          });
-          assetsToLoad.push(imgPromise);
-        }
-      });
-    }
-    
-    // Preload feature images from map if provided
-    if (featureImagesMap) {
-      Object.values(featureImagesMap).forEach(imgPath => {
-        let imagePath: string | undefined;
-        if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
-          imagePath = imgPath;
-        } else if (imgPath.startsWith('/')) {
-          imagePath = `${BASE_URL}${imgPath.substring(1)}`;
-        } else {
-          imagePath = `${BASE_URL}${imgPath}`;
+        // Preload feature images if provided (first few critical ones)
+        if (featureImages && featureImages.length > 0) {
+          const criticalFeatureImages = featureImages.slice(0, 3);
+          assetsToLoad.push(...criticalFeatureImages.map(img => getPath(img)!));
         }
         
-        if (imagePath) {
-          const imgPromise = new Promise<void>((resolve) => {
-            const img = new Image();
-            img.onload = () => resolve();
-            img.onerror = () => resolve();
-            img.src = imagePath;
-          });
-          assetsToLoad.push(imgPromise);
+        // Preload featureImagesMap images if provided (first few)
+        if (featureImagesMap) {
+          const criticalMapImages = Object.values(featureImagesMap).slice(0, 2);
+          assetsToLoad.push(...criticalMapImages.map(img => getPath(img)!));
         }
-      });
-    }
-    
-    // Wait for all assets to load, with minimum display time for animation
-    const minDisplayTime = new Promise(resolve => setTimeout(resolve, 1500));
-    
-    Promise.all([
-      Promise.all(assetsToLoad),
-      minDisplayTime
-    ]).then(() => {
-      setIsLoading(false);
-    });
-  }, [heroBackgroundImage, featureImages, featureImagesMap, location.pathname]);
+        
+        // Preload all critical images
+        await preloadImages(assetsToLoad.filter(Boolean) as string[]);
+        
+        // Load background video if not using white background (separate preload)
+        if (customBackground === 'default') {
+          try {
+            await preloadVideo(getPath('/assets/videos/bg.mp4')!);
+          } catch (error) {
+            console.warn('Failed to preload video, continuing anyway:', error);
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to preload some assets, continuing anyway:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCriticalAssets();
+  }, [heroBackgroundImage, featureImages, featureImagesMap, customBackground]);
 
   // Prevent browser scroll restoration
   useEffect(() => {
@@ -183,9 +140,9 @@ const ServicePage: React.FC<ServicePageProps> = ({
   useEffect(() => {
     // Use requestAnimationFrame to ensure DOM is ready
     requestAnimationFrame(() => {
-      if (lenisRef.current) {
-        lenisRef.current.scrollTo(0, { immediate: true });
-      }
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    }
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
@@ -274,15 +231,23 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const textColorClass = isWhiteBackground ? 'text-black' : 'text-white';
   const selectionClass = isWhiteBackground ? 'selection:bg-nexus-copper selection:text-black' : 'selection:bg-nexus-copper selection:text-white';
 
+  // Show loading screen until critical assets are loaded
+  if (isLoading) {
+    return (
+      <div className={`fixed inset-0 z-50 ${isWhiteBackground ? 'bg-white' : 'bg-nexus-dark'} flex items-center justify-center`}>
+        <div className={`text-2xl font-tesla tracking-widest ${textColorClass}`} style={{ fontFamily: 'Barlow' }}>
+          NEXUS
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`min-h-screen flex flex-col relative overflow-x-hidden ${selectionClass} font-tech ${textColorClass}`}>
-      {isLoading && <LoadingScreen />}
-      <div className={isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100 transition-opacity duration-500'}>
-        <SEOHead 
+      <SEOHead 
         titleKey={titleKey} 
         descriptionKey={subtitleKey}
         image={heroBackgroundImage}
-        preloadImages={heroBackgroundImage ? [heroBackgroundImage] : []}
       />
       
       {/* Global Background */}
@@ -320,20 +285,18 @@ const ServicePage: React.FC<ServicePageProps> = ({
         {/* Hero Section */}
         <section className="relative min-h-screen flex items-start justify-center overflow-hidden pt-20">
           {heroBackgroundImage && (
-            <>
-              <div className="absolute inset-0 z-0 bg-nexus-dark" />
+            <div className="absolute inset-0 z-0">
               <img 
                 src={getAssetPath(heroBackgroundImage)}
                 alt=""
-                className={`absolute inset-0 z-0 w-full h-full object-cover transition-opacity duration-500 ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                className="w-full h-full object-cover"
                 loading="eager"
-                decoding="sync"
+                decoding="async"
                 fetchPriority="high"
-                onLoad={() => setHeroImageLoaded(true)}
               />
-            </>
+            </div>
           )}
-          <div className={`w-full px-6 md:px-12 relative z-10 flex flex-col items-center justify-start min-h-full pt-12 md:pt-16 transition-opacity duration-300 ${heroBackgroundImage && !heroImageLoaded ? 'opacity-0' : 'opacity-100'}`}>
+          <div className="w-full px-6 md:px-12 relative z-10 flex flex-col items-center justify-start min-h-full pt-12 md:pt-16">
             <div className="max-w-[90rem] mx-auto w-full text-center">
               <h1 className={`font-tesla font-bold text-4xl md:text-6xl ${isWhiteBackground ? 'text-black' : 'text-white'} uppercase tracking-wider ${isWhiteBackground ? '' : 'drop-shadow-2xl'} leading-[0.9]`} style={{ fontFamily: 'Barlow' }}>
                 {t(titleKey)}
@@ -496,9 +459,9 @@ const ServicePage: React.FC<ServicePageProps> = ({
         </section>
       </main>
 
-        <Footer />
+      <Footer />
 
-        {/* Contact Modal */}
+      {/* Contact Modal */}
       {isContactOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
@@ -529,7 +492,6 @@ const ServicePage: React.FC<ServicePageProps> = ({
           </div>
         </div>
       )}
-      </div>
     </div>
   );
 };

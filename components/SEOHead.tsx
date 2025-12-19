@@ -2,20 +2,16 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const BASE_URL = import.meta.env.BASE_URL || '/';
-
 interface SEOHeadProps {
   titleKey?: string;
   descriptionKey?: string;
   image?: string;
-  preloadImages?: string[]; // Array of image paths to preload
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({ 
   titleKey,
   descriptionKey,
-  image = '/og-image.png',
-  preloadImages = []
+  image = '/og-image.png'
 }) => {
   const { t, language } = useLanguage();
   const location = useLocation();
@@ -62,15 +58,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     const enPath = getAlternatePath(location.pathname, 'en');
     updateAlternateLinks(trPath, enPath);
 
-    // Preload critical images
-    preloadImages.forEach(imgPath => {
-      if (imgPath) {
-        const fullPath = imgPath.startsWith('/') ? `${BASE_URL}${imgPath.substring(1)}` : `${BASE_URL}${imgPath}`;
-        preloadImage(fullPath);
-      }
-    });
-
-  }, [titleKey, descriptionKey, image, preloadImages, t, language, location.pathname]);
+  }, [titleKey, descriptionKey, image, t, language, location.pathname]);
 
   return null;
 };
@@ -136,19 +124,6 @@ function updateAlternateLinks(trPath: string, enPath: string) {
   defaultLink.hreflang = 'x-default';
   defaultLink.href = `https://nexusbiotech.org${trPath}`;
   document.head.appendChild(defaultLink);
-}
-
-function preloadImage(src: string) {
-  // Check if link already exists
-  const existingLink = document.querySelector(`link[rel="preload"][as="image"][href="${src}"]`);
-  if (existingLink) return;
-  
-  const link = document.createElement('link');
-  link.rel = 'preload';
-  link.as = 'image';
-  link.href = src;
-  link.fetchPriority = 'high';
-  document.head.appendChild(link);
 }
 
 function getAlternatePath(currentPath: string, targetLang: 'tr' | 'en'): string {
