@@ -188,19 +188,32 @@ video:not([controls]) {
     max-width: 100vw;
   }
   
+  /* Prevent text overflow - ensure titles fit within viewport */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
   /* Improve text readability on mobile */
   p, li, span {
     line-height: 1.6;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    line-height: 1.2;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   /* Better spacing on mobile */
   section {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+  
+  /* Ensure titles with uppercase and wide tracking don't overflow */
+  h1.uppercase, h2.uppercase, h3.uppercase {
+    letter-spacing: 0.05em;
   }
 }
 

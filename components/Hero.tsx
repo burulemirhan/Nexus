@@ -11,12 +11,18 @@ const Hero: React.FC = () => {
       aria-labelledby="hero-title"
     >
       
-      <div className="absolute bottom-16 md:bottom-24 left-4 md:left-12 z-20 flex flex-col items-start gap-4 md:gap-6 pr-4 md:pr-0">
+      <div className="absolute bottom-16 md:bottom-24 left-4 md:left-12 z-20 flex flex-col items-start gap-4 md:gap-6 pr-4 md:pr-0 max-w-[calc(100vw-2rem)] md:max-w-none">
         
         <h1 
           id="hero-title"
-          className="font-tesla font-bold text-3xl md:text-6xl text-white uppercase tracking-wider drop-shadow-2xl leading-[1.1] md:leading-[0.9]" 
-          style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.875rem, 5vw, 3.75rem)' }}
+          className="font-tesla font-bold text-2xl md:text-6xl text-white uppercase tracking-wide md:tracking-wider drop-shadow-2xl leading-[1.1] md:leading-[0.9] break-words hyphens-auto" 
+          style={{ 
+            fontFamily: 'Barlow', 
+            fontSize: 'clamp(1.5rem, 4vw, 3.75rem)',
+            maxWidth: '100%',
+            wordWrap: 'break-word',
+            overflowWrap: 'break-word'
+          }}
         >
           {t('hero.title')}
         </h1>

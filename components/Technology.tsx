@@ -83,7 +83,7 @@ const Technology: React.FC = () => {
                       {t('tech.prototype')}: {activeTech.id.toUpperCase()}
                    </h3>
                    {/* Title size reduced */}
-                   <h1 className="font-tesla font-bold text-4xl md:text-6xl text-white leading-none tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(2rem, 8vw, 3.75rem)' }}>
+                   <h1 className="font-tesla font-bold text-3xl md:text-6xl text-white leading-tight md:leading-none tracking-normal break-words" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.75rem, 6vw, 3.75rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word' }}>
                       {activeTech.name}
                    </h1>
                 </div>

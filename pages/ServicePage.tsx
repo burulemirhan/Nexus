@@ -278,8 +278,8 @@ const ServicePage: React.FC<ServicePageProps> = ({
             </div>
           )}
           <div className="w-full px-4 md:px-12 relative z-10 flex flex-col items-center justify-start min-h-full pt-12 md:pt-16">
-            <div className="max-w-[90rem] mx-auto w-full text-center">
-              <h1 className={`font-tesla font-bold text-3xl md:text-6xl ${isWhiteBackground ? 'text-black' : 'text-white'} uppercase tracking-wider ${isWhiteBackground ? '' : 'drop-shadow-2xl'} leading-[1.1] md:leading-[0.9]`} style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.875rem, 5vw, 3.75rem)' }}>
+            <div className="max-w-[90rem] mx-auto w-full text-center px-2 md:px-0">
+              <h1 className={`font-tesla font-bold text-2xl md:text-6xl ${isWhiteBackground ? 'text-black' : 'text-white'} uppercase tracking-wide md:tracking-wider ${isWhiteBackground ? '' : 'drop-shadow-2xl'} leading-[1.1] md:leading-[0.9] break-words hyphens-auto`} style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 4vw, 3.75rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word' }}>
                 {t(titleKey)}
               </h1>
             </div>
@@ -290,7 +290,7 @@ const ServicePage: React.FC<ServicePageProps> = ({
         <section className={`relative ${featureImagesMap ? 'py-20 md:py-52' : 'py-16 md:py-40'} ${isWhiteBackground ? 'bg-white' : 'bg-nexus-dark/50 backdrop-blur-sm'}`}>
           <div className="w-full px-4 md:px-12 relative z-10">
             <div className="max-w-[90rem] mx-auto w-full">
-              <h2 className={`font-tesla font-bold text-2xl md:text-5xl ${isWhiteBackground ? 'text-black' : 'text-white'} uppercase mb-8 md:mb-12 tracking-tight ${centerFeatures ? 'text-center' : ''}`} style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 5vw, 3rem)' }}>
+              <h2 className={`font-tesla font-bold text-2xl md:text-5xl ${isWhiteBackground ? 'text-black' : 'text-white'} uppercase mb-8 md:mb-12 tracking-tight ${centerFeatures ? 'text-center' : ''} break-words`} style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 4vw, 3rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word' }}>
                 {t('servicePage.features')}
               </h2>
               
@@ -421,7 +421,7 @@ const ServicePage: React.FC<ServicePageProps> = ({
             <div className="max-w-[90rem] mx-auto w-full text-center">
               {!hideCTATitle && (
                 <>
-                  <h2 className={`font-tesla font-bold text-2xl md:text-5xl ${isWhiteBackground ? 'text-black' : 'text-white'} uppercase mb-4 md:mb-6 tracking-tight`} style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 5vw, 3rem)' }}>
+                  <h2 className={`font-tesla font-bold text-2xl md:text-5xl ${isWhiteBackground ? 'text-black' : 'text-white'} uppercase mb-4 md:mb-6 tracking-tight break-words px-2 md:px-0`} style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 4vw, 3rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word' }}>
                     {t('servicePage.ctaTitle')}
                   </h2>
                   <p className={`${isWhiteBackground ? 'text-black/70' : 'text-white/70'} text-base md:text-lg mb-6 md:mb-8 max-w-2xl mx-auto`} style={{ fontSize: '16px' }}>

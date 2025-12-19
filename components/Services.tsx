@@ -45,7 +45,7 @@ const Services: React.FC = () => {
       <div className="pointer-events-none absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black to-nexus-dark/50" />
       <div className="w-full px-6 md:px-12 relative z-10 flex flex-col justify-center min-h-full">
         
-        <h2 className="font-tesla font-bold text-2xl md:text-5xl text-white uppercase mb-8 md:mb-10 tracking-tight" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 5vw, 3rem)' }}>
+        <h2 className="font-tesla font-bold text-2xl md:text-5xl text-white uppercase mb-8 md:mb-10 tracking-tight break-words" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 4vw, 3rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word' }}>
           {t('services.title')}
         </h2>
 

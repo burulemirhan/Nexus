@@ -71,7 +71,7 @@ const DefenseSpace: React.FC = () => {
       <div className="w-full px-4 md:px-12 relative z-10 flex flex-col justify-center min-h-full">
         
         <div className="flex flex-col md:flex-row justify-between items-end mb-10 md:mb-14 border-b border-white/10 pb-4 md:pb-5 max-w-[90rem] mx-auto w-full">
-          <h2 className="font-tesla font-bold text-2xl md:text-5xl text-white uppercase tracking-tight leading-tight" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 5vw, 3rem)' }}>
+          <h2 className="font-tesla font-bold text-2xl md:text-5xl text-white uppercase tracking-tight leading-tight break-words" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 4vw, 3rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word' }}>
             {t('defense.title')}
           </h2>
           <p className="font-mono text-white/50 text-right mt-3 md:mt-0 uppercase tracking-widest text-xs md:text-xs" style={{ fontSize: '16px' }}>
