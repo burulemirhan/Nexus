@@ -235,9 +235,35 @@ const ServicePage: React.FC<ServicePageProps> = ({
   if (isLoading) {
     return (
       <div className={`fixed inset-0 z-50 ${isWhiteBackground ? 'bg-white' : 'bg-nexus-dark'} flex items-center justify-center`}>
-        <div className={`text-2xl font-tesla tracking-widest ${textColorClass}`} style={{ fontFamily: 'Barlow' }}>
-          NEXUS
+        <div className="flex flex-col items-center justify-center gap-8">
+          <div className="relative">
+            {/* Animated loading circle */}
+            <div className={`w-24 h-24 md:w-32 md:h-32 border-4 ${isWhiteBackground ? 'border-emerald-600/30 border-t-emerald-600' : 'border-emerald-500/30 border-t-emerald-500'} rounded-full animate-spin-fast`}></div>
+            {/* Inner circle */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className={`w-16 h-16 md:w-20 md:h-20 border-4 ${isWhiteBackground ? 'border-emerald-600/20 border-b-emerald-600' : 'border-emerald-500/20 border-b-emerald-500'} rounded-full animate-spin-fast-reverse`}></div>
+            </div>
+          </div>
+          <div className={`text-3xl md:text-5xl font-tesla tracking-widest animate-pulse ${textColorClass}`} style={{ fontFamily: 'Barlow' }}>
+            NEXUS
+          </div>
         </div>
+        <style>{`
+          @keyframes spin-fast {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          @keyframes spin-fast-reverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+          }
+          .animate-spin-fast {
+            animation: spin-fast 0.8s linear infinite;
+          }
+          .animate-spin-fast-reverse {
+            animation: spin-fast-reverse 0.6s linear infinite;
+          }
+        `}</style>
       </div>
     );
   }
