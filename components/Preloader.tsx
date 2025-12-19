@@ -10,19 +10,14 @@ const EMERALD_PRIMARY = '#10b981'; // Emerald-500
 const EMERALD_GLOW = '#34d399'; // Emerald-400 for glow
 const EMERALD_DARK = '#059669'; // Emerald-600 for subtle variation
 
-interface Point {
-  x: number;
-  y: number;
-}
-
 interface Branch {
   angle: number;
   length: number;
   maxLength: number;
+  curve: number; // Curvature factor
   progress: number;
   dotProgress: number;
   endDotSize: number;
-  waypoints: Point[]; // Snake-like path waypoints
 }
 
 const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => {
@@ -69,58 +64,24 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
     };
   };
 
-  // Generate snake-like path waypoints with direction changes
-  const generateSnakePath = (
-    centerX: number,
-    centerY: number,
-    baseAngle: number,
-    maxLength: number,
-    random: () => number
-  ): Point[] => {
-    const waypoints: Point[] = [];
-    const segmentCount = 5 + Math.floor(random() * 4); // 5-8 segments for snake-like movement
-    const segmentLength = maxLength / segmentCount;
-    
-    let currentX = centerX;
-    let currentY = centerY;
-    let currentAngle = baseAngle;
-    
-    // Add starting point
-    waypoints.push({ x: currentX, y: currentY });
-    
-    for (let i = 0; i < segmentCount; i++) {
-      // Change direction slightly for each segment (snake-like movement)
-      const angleChange = (random() - 0.5) * 0.6; // -0.3 to 0.3 radians
-      currentAngle += angleChange;
-      
-      // Calculate next point
-      currentX += Math.cos(currentAngle) * segmentLength;
-      currentY += Math.sin(currentAngle) * segmentLength;
-      
-      waypoints.push({ x: currentX, y: currentY });
-    }
-    
-    return waypoints;
-  };
-
-  // Generate deterministic branches with snake-like paths
-  const generateBranches = (count: number, seed: number, centerX: number, centerY: number): Branch[] => {
+  // Generate deterministic branches
+  const generateBranches = (count: number, seed: number): Branch[] => {
     const random = seededRandom(seed);
     const branches: Branch[] = [];
     
     for (let i = 0; i < count; i++) {
-      const baseAngle = (i / count) * Math.PI * 2 + (random() - 0.5) * 0.3;
+      const angle = (i / count) * Math.PI * 2 + (random() - 0.5) * 0.3;
       const maxLength = 150 + random() * 100; // 150-250px (longer arms)
-      const waypoints = generateSnakePath(centerX, centerY, baseAngle, maxLength, random);
+      const curve = (random() - 0.5) * 0.4; // -0.2 to 0.2 curvature
       
       branches.push({
-        angle: baseAngle,
+        angle,
         length: 0,
         maxLength,
+        curve,
         progress: 0,
         dotProgress: 0,
         endDotSize: 0,
-        waypoints,
       });
     }
     
@@ -213,19 +174,9 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
 
     // Full animation
     const branchCount = 18; // More arms for richer network
-    let branches: Branch[] = [];
-    const cycleDuration = 5000; // 5 seconds per cycle (growth + fade) - slower growth
-    const growthPhase = 0.6; // First 60% is growth, rest is fade
-    
-    // Initialize branches with center coordinates
-    const initializeBranches = () => {
-      const rect = canvas.getBoundingClientRect();
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      branches = generateBranches(branchCount, 42, centerX, centerY);
-    };
-    
-    initializeBranches();
+    let branches = generateBranches(branchCount, 42); // Seed: 42
+    const cycleDuration = 3000; // 3 seconds per cycle (growth + fade)
+    const growthPhase = 0.5; // First 50% is growth, rest is fade
 
     const animate = () => {
       const elapsed = Date.now() - cycleStartTimeRef.current;
@@ -259,9 +210,9 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
           branch.progress = easedProgress;
           branch.length = branch.maxLength * easedProgress;
           
-          // Dot appears when branch is 75% grown
-          if (easedProgress > 0.75) {
-            branch.dotProgress = Math.min(1, (easedProgress - 0.75) / 0.25);
+          // Dot appears when branch is 70% grown
+          if (easedProgress > 0.7) {
+            branch.dotProgress = Math.min(1, (easedProgress - 0.7) / 0.3);
             branch.endDotSize = 3 * easeOutCubic(branch.dotProgress);
           }
         });
@@ -275,7 +226,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
         });
       }
 
-      // Draw branches and dots with snake-like path
+      // Draw branches and dots
       branches.forEach((branch) => {
         if (branch.progress <= 0) return;
 
@@ -285,75 +236,47 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
 
         if (opacity <= 0) return;
 
-        // Calculate how many waypoints should be visible based on progress
-        const totalWaypoints = branch.waypoints.length;
-        const visibleWaypoints = Math.max(2, Math.ceil(totalWaypoints * branch.progress));
-        
-        // Draw snake-like path segment by segment
+        // Calculate branch path with curve
+        const startX = centerX;
+        const startY = centerY;
+        const endX = startX + Math.cos(branch.angle) * branch.length;
+        const endY = startY + Math.sin(branch.angle) * branch.length;
+
+        // Apply curvature
+        const midX = (startX + endX) / 2;
+        const midY = (startY + endY) / 2;
+        const perpAngle = branch.angle + Math.PI / 2;
+        const curveOffset = branch.curve * branch.length * 0.3;
+        const curveX = midX + Math.cos(perpAngle) * curveOffset;
+        const curveY = midY + Math.sin(perpAngle) * curveOffset;
+
+        // Draw curved branch - white arms
         ctx.save();
         ctx.globalAlpha = opacity * 0.9;
         ctx.strokeStyle = '#ffffff'; // White arms
         ctx.lineWidth = 1.5;
         ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
         ctx.shadowBlur = 3;
         ctx.shadowColor = `rgba(255, 255, 255, ${opacity * 0.3})`; // Soft white glow
 
         ctx.beginPath();
-        
-        // Start from first waypoint (center)
-        const startPoint = branch.waypoints[0];
-        ctx.moveTo(startPoint.x, startPoint.y);
-        
-        // Draw smooth curves between waypoints (snake-like movement)
-        for (let i = 1; i < visibleWaypoints; i++) {
-          const currentPoint = branch.waypoints[i];
-          const prevPoint = branch.waypoints[i - 1];
-          
-          if (i === visibleWaypoints - 1 && visibleWaypoints < totalWaypoints) {
-            // For the last visible segment, interpolate to show partial growth
-            const nextPoint = branch.waypoints[i];
-            const segmentProgress = (branch.progress * totalWaypoints) - (i - 1);
-            const segmentProgressClamped = Math.min(1, Math.max(0, segmentProgress));
-            
-            const interpolatedX = prevPoint.x + (nextPoint.x - prevPoint.x) * segmentProgressClamped;
-            const interpolatedY = prevPoint.y + (nextPoint.y - prevPoint.y) * segmentProgressClamped;
-            
-            // Use quadratic curve for smooth snake-like movement
-            if (i > 1) {
-              const controlX = prevPoint.x;
-              const controlY = prevPoint.y;
-              ctx.quadraticCurveTo(controlX, controlY, interpolatedX, interpolatedY);
-            } else {
-              ctx.lineTo(interpolatedX, interpolatedY);
-            }
-          } else {
-            // Use quadratic curve for smooth transitions
-            if (i > 1) {
-              const controlX = prevPoint.x;
-              const controlY = prevPoint.y;
-              ctx.quadraticCurveTo(controlX, controlY, currentPoint.x, currentPoint.y);
-            } else {
-              ctx.lineTo(currentPoint.x, currentPoint.y);
-            }
-          }
-        }
-        
+        ctx.moveTo(startX, startY);
+        ctx.quadraticCurveTo(curveX, curveY, endX, endY);
         ctx.stroke();
+        
         ctx.shadowBlur = 0;
         ctx.restore();
 
         // Draw end dot - white (matching the arms)
-        if (branch.dotProgress > 0 && branch.endDotSize > 0 && visibleWaypoints >= totalWaypoints) {
-          const endPoint = branch.waypoints[branch.waypoints.length - 1];
+        if (branch.dotProgress > 0 && branch.endDotSize > 0) {
           ctx.save();
           const dotOpacity = opacity * branch.dotProgress;
           ctx.globalAlpha = dotOpacity;
 
           // Dot halo - white
           const dotGradient = ctx.createRadialGradient(
-            endPoint.x, endPoint.y, 0,
-            endPoint.x, endPoint.y, branch.endDotSize * 2.5
+            endX, endY, 0,
+            endX, endY, branch.endDotSize * 2.5
           );
           dotGradient.addColorStop(0, `rgba(255, 255, 255, ${dotOpacity * 0.4})`);
           dotGradient.addColorStop(0.6, `rgba(255, 255, 255, ${dotOpacity * 0.15})`);
@@ -361,13 +284,13 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
           
           ctx.fillStyle = dotGradient;
           ctx.beginPath();
-          ctx.arc(endPoint.x, endPoint.y, branch.endDotSize * 2.5, 0, Math.PI * 2);
+          ctx.arc(endX, endY, branch.endDotSize * 2.5, 0, Math.PI * 2);
           ctx.fill();
 
           // Dot core - white
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.arc(endPoint.x, endPoint.y, branch.endDotSize, 0, Math.PI * 2);
+          ctx.arc(endX, endY, branch.endDotSize, 0, Math.PI * 2);
           ctx.fill();
           
           ctx.restore();
@@ -406,7 +329,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
       // Reset cycle if we've faded completely - ensure continuous looping
       if (!isGrowing && phaseProgress >= 1) {
         cycleStartTimeRef.current = Date.now();
-        branches = generateBranches(branchCount, 42, centerX, centerY);
+        branches = generateBranches(branchCount, 42);
       }
 
       // Always continue animation loop - never stop until component unmounts
