@@ -197,14 +197,40 @@ const ServicePage: React.FC<ServicePageProps> = ({
         <div className="fixed inset-0 z-0 select-none overflow-hidden bg-nexus-dark">
           <div className="absolute inset-0 w-full h-full">
             <video 
+              ref={(video) => {
+                if (video) {
+                  video.muted = true;
+                  video.loop = true;
+                  video.playsInline = true;
+                  video.setAttribute('webkit-playsinline', 'true');
+                  video.setAttribute('playsinline', 'true');
+                  video.removeAttribute('controls');
+                  video.style.pointerEvents = 'none';
+                  // Ensure video plays on mobile
+                  const playPromise = video.play();
+                  if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                      // Auto-play was prevented, try again on user interaction
+                      const tryPlay = () => {
+                        video.play().catch(() => {});
+                        document.removeEventListener('touchstart', tryPlay);
+                        document.removeEventListener('click', tryPlay);
+                      };
+                      document.addEventListener('touchstart', tryPlay, { once: true });
+                      document.addEventListener('click', tryPlay, { once: true });
+                    });
+                  }
+                }
+              }}
               autoPlay 
               loop 
               muted 
               playsInline
               className="w-full h-full object-cover -z-50"
-              poster={`${BASE_URL}assets/images/bg.avif`}
+              poster={getAssetPath(`${BASE_URL}assets/images/bg.avif`)}
+              style={{ pointerEvents: 'none' }}
             >
-              <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
+              <source src={getAssetPath(`${BASE_URL}assets/videos/bg.mp4`)} type="video/mp4" />
               <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
             </video>
           </div>

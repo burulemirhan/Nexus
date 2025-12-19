@@ -95,14 +95,34 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size
+    // Set canvas size - ensure proper dimensions for mobile
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+      
+      // Set actual canvas size in physical pixels
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      
+      // Scale context to match device pixel ratio for crisp rendering
+      ctx.scale(dpr, dpr);
+      
+      // Set display size in CSS pixels
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
     };
     
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    const resizeHandler = () => {
+      resizeCanvas();
+      // Ensure animation continues after resize
+      if (!animationFrameRef.current) {
+        cycleStartTimeRef.current = Date.now();
+      }
+    };
+    window.addEventListener('resize', resizeHandler);
 
     // Reduced motion: simple pulse
     if (reducedMotion.current) {
@@ -111,10 +131,15 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
         const cycleDuration = 2000;
         const t = (elapsed % cycleDuration) / cycleDuration;
         
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const rect = canvas.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
         
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
+        // Clear using logical pixels (ctx is already scaled)
+        ctx.clearRect(0, 0, width, height);
+        
+        const centerX = width / 2;
+        const centerY = height / 2;
         const pulseSize = 4 + Math.sin(t * Math.PI * 2) * 0.5;
         const opacity = 0.6 + Math.sin(t * Math.PI * 2) * 0.2;
         
@@ -143,7 +168,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
         if (animationFrameRef.current) {
           cancelAnimationFrame(animationFrameRef.current);
         }
-        window.removeEventListener('resize', resizeCanvas);
+        window.removeEventListener('resize', resizeHandler);
       };
     }
 
@@ -161,10 +186,15 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
         ? cycleProgress / growthPhase 
         : (cycleProgress - growthPhase) / (1 - growthPhase);
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const rect = canvas.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
       
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
+      // Clear using logical pixels (ctx is already scaled)
+      ctx.clearRect(0, 0, width, height);
+      
+      const centerX = width / 2;
+      const centerY = height / 2;
 
       // Easing functions for smooth motion
       const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -268,7 +298,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
       });
 
       // Draw central dot (always visible during growth, fades during fade phase)
-      const centralDotOpacity = isGrowing ? 1 : Math.max(0.3, branch.progress);
+      const centralDotOpacity = isGrowing ? 1 : Math.max(0.3, 1 - easeInOutCubic(phaseProgress));
       if (centralDotOpacity > 0) {
         ctx.save();
         ctx.globalAlpha = centralDotOpacity;
@@ -296,12 +326,13 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
         ctx.restore();
       }
 
-      // Reset cycle if we've faded completely
+      // Reset cycle if we've faded completely - ensure continuous looping
       if (!isGrowing && phaseProgress >= 1) {
         cycleStartTimeRef.current = Date.now();
         branches = generateBranches(branchCount, 42);
       }
 
+      // Always continue animation loop - never stop until component unmounts
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
@@ -311,7 +342,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('resize', resizeHandler);
     };
   }, []);
 

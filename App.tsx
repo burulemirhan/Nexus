@@ -82,6 +82,31 @@ const App: React.FC = () => {
       <div className="fixed inset-0 z-0 select-none overflow-hidden bg-nexus-dark" aria-hidden="true">
         <div className="absolute inset-0 w-full h-full">
           <video 
+            ref={(video) => {
+              if (video) {
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.setAttribute('webkit-playsinline', 'true');
+                video.setAttribute('playsinline', 'true');
+                video.removeAttribute('controls');
+                video.style.pointerEvents = 'none';
+                // Ensure video plays on mobile
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                  playPromise.catch(() => {
+                    // Auto-play was prevented, try again on user interaction
+                    const tryPlay = () => {
+                      video.play().catch(() => {});
+                      document.removeEventListener('touchstart', tryPlay);
+                      document.removeEventListener('click', tryPlay);
+                    };
+                    document.addEventListener('touchstart', tryPlay, { once: true });
+                    document.addEventListener('click', tryPlay, { once: true });
+                  });
+                }
+              }
+            }}
             autoPlay 
             loop 
             muted 
@@ -89,6 +114,7 @@ const App: React.FC = () => {
             preload="auto"
             className="w-full h-full object-cover -z-50"
             aria-hidden="true"
+            style={{ pointerEvents: 'none' }}
           >
             <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
              {/* Fallback stock video of vertical farming/technology */}

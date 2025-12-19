@@ -157,14 +157,40 @@ const DefenseSpace: React.FC = () => {
             <div className="group relative overflow-hidden flex flex-col min-h-[640px] md:min-h-[720px]" style={{ willChange: 'auto' }}>
                  {/* Background video fills box */}
                  <video
+                   ref={(video) => {
+                     if (video) {
+                       video.muted = true;
+                       video.loop = true;
+                       video.playsInline = true;
+                       video.setAttribute('webkit-playsinline', 'true');
+                       video.setAttribute('playsinline', 'true');
+                       video.removeAttribute('controls');
+                       video.style.pointerEvents = 'none';
+                       // Ensure video plays on mobile
+                       const playPromise = video.play();
+                       if (playPromise !== undefined) {
+                         playPromise.catch(() => {
+                           // Auto-play was prevented, try again on user interaction
+                           const tryPlay = () => {
+                             video.play().catch(() => {});
+                             document.removeEventListener('touchstart', tryPlay);
+                             document.removeEventListener('click', tryPlay);
+                           };
+                           document.addEventListener('touchstart', tryPlay, { once: true });
+                           document.addEventListener('click', tryPlay, { once: true });
+                         });
+                       }
+                     }
+                   }}
                    className="absolute inset-0 w-full h-full object-cover opacity-90"
                    src={`${BASE_URL}assets/videos/moon.mp4`}
                    autoPlay
                    muted
                    loop
                    playsInline
-                   preload="none"
+                   preload="auto"
                    aria-hidden="true"
+                   style={{ pointerEvents: 'none' }}
                  />
                  <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/20 pointer-events-none" />
 
