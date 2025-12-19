@@ -190,7 +190,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
     // Full animation - slower for more organic feel
     const branchCount = 18; // More arms for richer network
     let branches = generateBranches(branchCount, 42); // Seed: 42
-    const cycleDuration = 6000; // 6 seconds per cycle (slower, more natural)
+    const cycleDuration = 12000; // 12 seconds per cycle (half speed for very slow, natural growth)
     const growthPhase = 0.65; // First 65% is growth, rest is fade
     const nodeSpacing = 0.15; // Create a node every 15% of branch length
 
