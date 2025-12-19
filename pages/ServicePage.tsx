@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
 import Preloader from '../components/Preloader';
 import { useLanguage } from '../contexts/LanguageContext';
-import Lenis from 'lenis';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
@@ -42,7 +41,7 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [showPreloader, setShowPreloader] = useState(true);
-  const lenisRef = useRef<Lenis | null>(null);
+  // Lenis is now managed globally - no need for local ref
 
   // Helper function to prepend BASE_URL to paths starting with /
   const getAssetPath = (path: string | undefined): string | undefined => {
@@ -57,134 +56,19 @@ const ServicePage: React.FC<ServicePageProps> = ({
     return `${BASE_URL}${path}`;
   };
 
-  // Prevent browser scroll restoration
-  useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-  }, []);
-
   // Reset preloader when route changes
   useEffect(() => {
     setShowPreloader(true);
   }, [location.pathname]);
 
-  // Set scroll position synchronously before browser paints
-  useLayoutEffect(() => {
-    // Set scroll position immediately without any animation or delay
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    
-    // Also reset Lenis if it exists
-    if (lenisRef.current) {
-      lenisRef.current.scrollTo(0, { immediate: true });
-    }
-    
-    // Disable smooth scrolling temporarily
-    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior = 'auto';
-    
-    // Force immediate scroll
-    window.scrollTo(0, 0);
-    
-    // Restore original scroll behavior after setting position
-    setTimeout(() => {
-      document.documentElement.style.scrollBehavior = originalScrollBehavior;
-    }, 0);
-  }, [location.pathname]);
-
-  // Reset Lenis scroll position when pathname changes (double check)
-  useEffect(() => {
-    // Use requestAnimationFrame to ensure DOM is ready
-    requestAnimationFrame(() => {
-    if (lenisRef.current) {
-      lenisRef.current.scrollTo(0, { immediate: true });
-    }
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    });
-  }, [location.pathname]);
-
+  // Update HTML lang attribute based on route
   useEffect(() => {
     const htmlLang = location.pathname.startsWith('/en') ? 'en' : 'tr';
     document.documentElement.lang = htmlLang;
   }, [location.pathname]);
 
-  useEffect(() => {
-    // Ensure we start at top BEFORE initializing Lenis
-    // Do this multiple times to ensure it sticks
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    
-    // Force scroll reset again after a microtask
-    Promise.resolve().then(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    });
-
-    const lenis = new Lenis({
-      duration: 1.2, // Slightly longer for smoother feel
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 0.8, // Slightly reduced for better control
-      touchMultiplier: 1.5, // Reduced for better mobile performance
-      infinite: false,
-    });
-
-    lenisRef.current = lenis;
-
-    // Set scroll position to 0 immediately when Lenis initializes
-    // Multiple attempts to ensure it works
-    lenis.scrollTo(0, { immediate: true });
-    setTimeout(() => {
-      lenis.scrollTo(0, { immediate: true });
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 0);
-    
-    // One more attempt after Lenis has had time to initialize
-    setTimeout(() => {
-      lenis.scrollTo(0, { immediate: true });
-      window.scrollTo(0, 0);
-    }, 100);
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest('a');
-      if (anchor) {
-        const href = anchor.getAttribute('href');
-        if (href?.startsWith('#')) {
-          e.preventDefault();
-          const element = document.querySelector(href);
-          if (element) {
-            lenis.scrollTo(element, { offset: 0 });
-          }
-        }
-      }
-    };
-
-    document.addEventListener('click', handleAnchorClick);
-
-    return () => {
-      lenis.destroy();
-      lenisRef.current = null;
-      document.removeEventListener('click', handleAnchorClick);
-    };
-  }, []);
+  // Scroll management is now handled globally by ScrollToTop component
+  // No need for duplicate scroll logic here
 
   const isWhiteBackground = customBackground === 'white';
   const textColorClass = isWhiteBackground ? 'text-black' : 'text-white';

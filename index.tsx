@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { LenisProvider } from './contexts/LenisContext';
 import EngineeringSolutions from './pages/EngineeringSolutions';
 import TurnkeyProjects from './pages/TurnkeyProjects';
 import DefenseProjects from './pages/DefenseProjects';
@@ -19,11 +20,17 @@ const root = ReactDOM.createRoot(rootElement);
 // Get base path from environment or use default
 const basePath = import.meta.env.BASE_URL || '/';
 
+// Disable browser scroll restoration globally for consistent SPA behavior
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 root.render(
   <React.StrictMode>
     <BrowserRouter basename={basePath}>
-      <ScrollToTop />
-      <Routes>
+      <LenisProvider>
+        <ScrollToTop />
+        <Routes>
         <Route path="/" element={
           <LanguageProvider defaultLanguage="tr">
             <App />
@@ -74,7 +81,8 @@ root.render(
             <ConsultingProjectManagement />
           </LanguageProvider>
         } />
-      </Routes>
+        </Routes>
+      </LenisProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

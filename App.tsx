@@ -10,7 +10,6 @@ import Services from './components/Services';
 import Footer from './components/Footer';
 import SEOHead from './components/SEOHead';
 import Preloader from './components/Preloader';
-import Lenis from 'lenis';
 
 // @ts-ignore - Vite provides BASE_URL via import.meta.env
 const BASE_URL = import.meta.env.BASE_URL || '/';
@@ -26,48 +25,8 @@ const App: React.FC = () => {
     document.documentElement.lang = htmlLang;
   }, [location.pathname]);
 
-  useEffect(() => {
-    // Initialize Lenis for smooth scrolling with optimized settings
-    const lenis = new Lenis({
-      duration: 1.2, // Slightly longer for smoother feel
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 0.8, // Slightly reduced for better control
-      touchMultiplier: 1.5, // Reduced for better mobile performance
-      infinite: false,
-    });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest('a');
-      if (anchor) {
-        const href = anchor.getAttribute('href');
-        if (href?.startsWith('#')) {
-          e.preventDefault();
-          const element = document.querySelector(href) as HTMLElement;
-          if (element) {
-            lenis.scrollTo(element, { offset: 0 });
-          }
-        }
-      }
-    };
-
-    document.addEventListener('click', handleAnchorClick);
-
-    return () => {
-      lenis.destroy();
-      document.removeEventListener('click', handleAnchorClick);
-    };
-  }, []);
+  // Lenis is now managed globally by LenisProvider
+  // No need to initialize it here
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-nexus-copper selection:text-white font-tech text-white">

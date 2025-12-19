@@ -121,7 +121,8 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, setIsMenuOpen, darkMode = f
              onClick={() => {
                const basePath = location.pathname.startsWith('/en') ? '/en' : '/';
                navigate(basePath);
-               window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+               // Scroll handled by ScrollToTop component
+              // No need to manually scroll here
              }}
              className={`font-tesla font-bold text-3xl md:text-[34px] tracking-wider ${darkMode ? 'text-black' : 'text-white drop-shadow-md'} hover:opacity-80 transition-opacity cursor-pointer`}
            >
