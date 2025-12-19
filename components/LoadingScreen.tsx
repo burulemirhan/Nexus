@@ -6,20 +6,19 @@ const LoadingScreen: React.FC = () => {
 
   useEffect(() => {
     let progressInterval: NodeJS.Timeout;
-    let minLoadingTime = 800; // Minimum loading time for smooth animation
+    const minLoadingTime = 1000;
     const startTime = Date.now();
 
-    // Progress animation
+    // Smooth progress animation
     progressInterval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 95) {
-          return 95; // Keep at 95% until assets load
+        if (prev >= 98) {
+          return 98;
         }
-        return prev + 1.5;
+        return prev + 1;
       });
-    }, 30);
+    }, 40);
 
-    // Check if page is fully loaded
     const checkComplete = () => {
       const elapsed = Date.now() - startTime;
       const remainingTime = Math.max(0, minLoadingTime - elapsed);
@@ -28,21 +27,19 @@ const LoadingScreen: React.FC = () => {
         setProgress(100);
         setTimeout(() => {
           setLoading(false);
-        }, 400);
+        }, 500);
       }, remainingTime);
     };
 
-    // Wait for window load event
     if (document.readyState === 'complete') {
       checkComplete();
     } else {
       window.addEventListener('load', checkComplete);
     }
 
-    // Fallback: maximum loading time
     const maxLoadingTimeout = setTimeout(() => {
       checkComplete();
-    }, 3000);
+    }, 3500);
 
     return () => {
       clearInterval(progressInterval);
@@ -53,291 +50,237 @@ const LoadingScreen: React.FC = () => {
 
   if (!loading) return null;
 
-  // Calculate animation stage based on progress
-  const stage = Math.min(Math.floor(progress / 25), 4);
-  const stemHeight = Math.min((progress / 100) * 80, 80);
-  const leafGrowth = Math.min((progress - 25) / 75, 1);
+  // Growth progress (0 to 1)
+  const growth = Math.min(progress / 100, 1);
+  const stemHeight = 60 * growth;
+  const leafSize = Math.max(0, (growth - 0.3) / 0.7);
 
   return (
     <div 
-      className="fixed inset-0 z-[9999] bg-nexus-dark flex items-center justify-center transition-opacity duration-500"
+      className="fixed inset-0 z-[9999] bg-nexus-dark flex items-center justify-center transition-opacity duration-700"
       style={{ 
         opacity: loading ? 1 : 0,
         pointerEvents: loading ? 'auto' : 'none'
       }}
     >
       <div className="flex flex-col items-center justify-center">
-        {/* Seed to Plant Animation */}
-        <div className="relative w-40 h-56 mb-8">
+        {/* Elegant Seed to Plant Animation */}
+        <div className="relative w-32 h-40 mb-8">
           <svg
-            viewBox="0 0 120 160"
+            viewBox="0 0 100 120"
             className="w-full h-full"
             xmlns="http://www.w3.org/2000/svg"
           >
-            {/* Soil */}
+            {/* Soil base - simple and minimal */}
             <ellipse
-              cx="60"
-              cy="150"
-              rx="55"
-              ry="10"
-              fill="#3d2817"
-              opacity={0.9}
+              cx="50"
+              cy="115"
+              rx="40"
+              ry="5"
+              fill="#1a1a1a"
+              opacity={0.6}
             />
 
-            {/* Seed */}
-            {stage === 0 && (
+            {/* Seed - shrinks as it grows */}
+            {growth < 0.15 && (
               <ellipse
-                cx="60"
-                cy="145"
-                rx="10"
-                ry="7"
-                fill="#8b5a3c"
-                opacity={1 - progress / 25}
-              >
-                <animate
-                  attributeName="cy"
-                  values="145;143;145"
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
-                <animate
-                  attributeName="opacity"
-                  values="1;0.7;1"
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
-              </ellipse>
+                cx="50"
+                cy={110 - growth * 20}
+                rx={8 - growth * 4}
+                ry={6 - growth * 3}
+                fill="#065f46"
+                opacity={1 - growth * 4}
+              />
             )}
 
-            {/* Sprouting Seed */}
-            {stage >= 1 && (
+            {/* Stem - grows upward */}
+            {growth >= 0.15 && (
+              <line
+                x1="50"
+                y1={110 - stemHeight}
+                x2="50"
+                y2="110"
+                stroke="#065f46"
+                strokeWidth="3"
+                strokeLinecap="round"
+                className="transition-all duration-1000 ease-out"
+              />
+            )}
+
+            {/* Bottom leaves */}
+            {growth >= 0.4 && (
               <>
-                {/* Small sprout */}
-                <line
-                  x1="60"
-                  y1={145 - stemHeight * 0.3}
-                  x2="60"
-                  y2="145"
-                  stroke="#10b981"
-                  strokeWidth="2"
+                {/* Left bottom leaf */}
+                <path
+                  d={`M 50 ${110 - stemHeight * 0.4} Q ${45 - leafSize * 8} ${105 - stemHeight * 0.45} ${40 - leafSize * 10} ${100 - stemHeight * 0.5}`}
+                  fill="none"
+                  stroke="#064e3b"
+                  strokeWidth="2.5"
                   strokeLinecap="round"
-                  opacity={Math.min(stage / 2, 1)}
-                  className="transition-all duration-700"
+                  opacity={leafSize}
+                  className="transition-all duration-800 ease-out"
+                />
+                <ellipse
+                  cx={40 - leafSize * 10}
+                  cy={100 - stemHeight * 0.5}
+                  rx={3 + leafSize * 5}
+                  ry={4 + leafSize * 6}
+                  fill="#064e3b"
+                  opacity={0.7 * leafSize}
+                  className="transition-all duration-800 ease-out"
                 />
                 
-                {/* First tiny leaves */}
-                {stage >= 2 && (
-                  <>
-                    <path
-                      d={`M 60 ${145 - stemHeight * 0.3} Q 55 ${135 - stemHeight * 0.35} 52 ${130 - stemHeight * 0.4}`}
-                      fill="none"
-                      stroke="#22c55e"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      opacity={leafGrowth}
-                      className="transition-all duration-700"
-                    />
-                    <ellipse
-                      cx={52}
-                      cy={130 - stemHeight * 0.4}
-                      rx={2 + leafGrowth * 3}
-                      ry={3 + leafGrowth * 4}
-                      fill="#22c55e"
-                      opacity={0.7 + leafGrowth * 0.2}
-                      className="transition-all duration-700"
-                    />
-                    <path
-                      d={`M 60 ${145 - stemHeight * 0.3} Q 65 ${135 - stemHeight * 0.35} 68 ${130 - stemHeight * 0.4}`}
-                      fill="none"
-                      stroke="#22c55e"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      opacity={leafGrowth}
-                      className="transition-all duration-700"
-                    />
-                    <ellipse
-                      cx={68}
-                      cy={130 - stemHeight * 0.4}
-                      rx={2 + leafGrowth * 3}
-                      ry={3 + leafGrowth * 4}
-                      fill="#22c55e"
-                      opacity={0.7 + leafGrowth * 0.2}
-                      className="transition-all duration-700"
-                    />
-                  </>
-                )}
+                {/* Right bottom leaf */}
+                <path
+                  d={`M 50 ${110 - stemHeight * 0.4} Q ${55 + leafSize * 8} ${105 - stemHeight * 0.45} ${60 + leafSize * 10} ${100 - stemHeight * 0.5}`}
+                  fill="none"
+                  stroke="#064e3b"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  opacity={leafSize}
+                  className="transition-all duration-800 ease-out"
+                />
+                <ellipse
+                  cx={60 + leafSize * 10}
+                  cy={100 - stemHeight * 0.5}
+                  rx={3 + leafSize * 5}
+                  ry={4 + leafSize * 6}
+                  fill="#064e3b"
+                  opacity={0.7 * leafSize}
+                  className="transition-all duration-800 ease-out"
+                />
+              </>
+            )}
 
-                {/* Main stem */}
-                <line
-                  x1="60"
-                  y1={145 - stemHeight}
-                  x2="60"
-                  y2="145"
-                  stroke="#10b981"
+            {/* Middle leaves */}
+            {growth >= 0.65 && (
+              <>
+                {/* Left middle leaf */}
+                <path
+                  d={`M 50 ${110 - stemHeight * 0.7} Q ${44 - leafSize * 6} ${85 - stemHeight * 0.75} ${38 - leafSize * 8} ${75 - stemHeight * 0.8}`}
+                  fill="none"
+                  stroke="#065f46"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  opacity={Math.max(0, (growth - 0.65) / 0.35)}
+                  className="transition-all duration-800 ease-out"
+                />
+                <ellipse
+                  cx={38 - leafSize * 8}
+                  cy={75 - stemHeight * 0.8}
+                  rx={3 + leafSize * 4}
+                  ry={4 + leafSize * 5}
+                  fill="#065f46"
+                  opacity={0.75 * Math.max(0, (growth - 0.65) / 0.35)}
+                  className="transition-all duration-800 ease-out"
+                />
+                
+                {/* Right middle leaf */}
+                <path
+                  d={`M 50 ${110 - stemHeight * 0.7} Q ${56 + leafSize * 6} ${85 - stemHeight * 0.75} ${62 + leafSize * 8} ${75 - stemHeight * 0.8}`}
+                  fill="none"
+                  stroke="#065f46"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  opacity={Math.max(0, (growth - 0.65) / 0.35)}
+                  className="transition-all duration-800 ease-out"
+                />
+                <ellipse
+                  cx={62 + leafSize * 8}
+                  cy={75 - stemHeight * 0.8}
+                  rx={3 + leafSize * 4}
+                  ry={4 + leafSize * 5}
+                  fill="#065f46"
+                  opacity={0.75 * Math.max(0, (growth - 0.65) / 0.35)}
+                  className="transition-all duration-800 ease-out"
+                />
+              </>
+            )}
+
+            {/* Top leaves - final stage */}
+            {growth >= 0.85 && (
+              <>
+                {/* Left top leaf */}
+                <path
+                  d="M 50 55 Q 45 42 38 35"
+                  fill="none"
+                  stroke="#064e3b"
                   strokeWidth="3"
                   strokeLinecap="round"
-                  opacity={Math.min((stage - 1) / 3, 1)}
-                  className="transition-all duration-700"
+                  opacity={Math.max(0, (growth - 0.85) / 0.15)}
+                  className="transition-all duration-600 ease-out"
                 />
-
-                {/* Mid-level leaves */}
-                {stage >= 3 && (
-                  <>
-                    <path
-                      d={`M 60 ${145 - stemHeight * 0.6} Q 52 ${130 - stemHeight * 0.65} 46 ${120 - stemHeight * 0.7}`}
-                      fill="none"
-                      stroke="#10b981"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      opacity={Math.max(0, (progress - 50) / 25)}
-                      className="transition-all duration-700"
-                    />
-                    <ellipse
-                      cx={46}
-                      cy={120 - stemHeight * 0.7}
-                      rx={3 + Math.max(0, (progress - 50) / 25) * 4}
-                      ry={4 + Math.max(0, (progress - 50) / 25) * 5}
-                      fill="#10b981"
-                      opacity={0.75 + Math.max(0, (progress - 50) / 25) * 0.15}
-                      className="transition-all duration-700"
-                    />
-                    <path
-                      d={`M 60 ${145 - stemHeight * 0.6} Q 68 ${130 - stemHeight * 0.65} 74 ${120 - stemHeight * 0.7}`}
-                      fill="none"
-                      stroke="#10b981"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      opacity={Math.max(0, (progress - 50) / 25)}
-                      className="transition-all duration-700"
-                    />
-                    <ellipse
-                      cx={74}
-                      cy={120 - stemHeight * 0.7}
-                      rx={3 + Math.max(0, (progress - 50) / 25) * 4}
-                      ry={4 + Math.max(0, (progress - 50) / 25) * 5}
-                      fill="#10b981"
-                      opacity={0.75 + Math.max(0, (progress - 50) / 25) * 0.15}
-                      className="transition-all duration-700"
-                    />
-                  </>
-                )}
-
-                {/* Top leaves - fully grown */}
-                {stage >= 4 && (
-                  <>
-                    {/* Left top leaf */}
-                    <path
-                      d="M 60 65 Q 54 52 48 45"
-                      fill="none"
-                      stroke="#10b981"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      opacity={Math.max(0, (progress - 75) / 25)}
-                      className="transition-all duration-500"
-                    />
-                    <ellipse
-                      cx="48"
-                      cy="45"
-                      rx={4 + Math.max(0, (progress - 75) / 25) * 4}
-                      ry={5 + Math.max(0, (progress - 75) / 25) * 5}
-                      fill="#10b981"
-                      opacity={0.85 + Math.max(0, (progress - 75) / 25) * 0.1}
-                      className="transition-all duration-500"
-                    >
-                      <animate
-                        attributeName="opacity"
-                        values="0.85;0.95;0.85"
-                        dur="2.5s"
-                        repeatCount="indefinite"
-                      />
-                    </ellipse>
-                    
-                    {/* Right top leaf */}
-                    <path
-                      d="M 60 65 Q 66 52 72 45"
-                      fill="none"
-                      stroke="#10b981"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      opacity={Math.max(0, (progress - 75) / 25)}
-                      className="transition-all duration-500"
-                    />
-                    <ellipse
-                      cx="72"
-                      cy="45"
-                      rx={4 + Math.max(0, (progress - 75) / 25) * 4}
-                      ry={5 + Math.max(0, (progress - 75) / 25) * 5}
-                      fill="#10b981"
-                      opacity={0.85 + Math.max(0, (progress - 75) / 25) * 0.1}
-                      className="transition-all duration-500"
-                    >
-                      <animate
-                        attributeName="opacity"
-                        values="0.85;0.95;0.85"
-                        dur="2.5s"
-                        repeatCount="indefinite"
-                        begin="0.7s"
-                      />
-                    </ellipse>
-                    
-                    {/* Center top leaf */}
-                    <path
-                      d="M 60 70 Q 60 50 60 40"
-                      fill="none"
-                      stroke="#22c55e"
-                      strokeWidth="3.5"
-                      strokeLinecap="round"
-                      opacity={Math.max(0, (progress - 85) / 15)}
-                      className="transition-all duration-500"
-                    />
-                    <ellipse
-                      cx="60"
-                      cy="40"
-                      rx={3 + Math.max(0, (progress - 85) / 15) * 4}
-                      ry={4 + Math.max(0, (progress - 85) / 15) * 5}
-                      fill="#22c55e"
-                      opacity={0.9 + Math.max(0, (progress - 85) / 15) * 0.1}
-                      className="transition-all duration-500"
-                    >
-                      <animate
-                        attributeName="opacity"
-                        values="0.9;1;0.9"
-                        dur="2s"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="ry"
-                        values="9;10;9"
-                        dur="2s"
-                        repeatCount="indefinite"
-                      />
-                    </ellipse>
-                  </>
-                )}
+                <ellipse
+                  cx="38"
+                  cy="35"
+                  rx={5 + Math.max(0, (growth - 0.85) / 0.15) * 3}
+                  ry={6 + Math.max(0, (growth - 0.85) / 0.15) * 4}
+                  fill="#064e3b"
+                  opacity={0.8 * Math.max(0, (growth - 0.85) / 0.15)}
+                  className="transition-all duration-600 ease-out"
+                />
+                
+                {/* Right top leaf */}
+                <path
+                  d="M 50 55 Q 55 42 62 35"
+                  fill="none"
+                  stroke="#064e3b"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  opacity={Math.max(0, (growth - 0.85) / 0.15)}
+                  className="transition-all duration-600 ease-out"
+                />
+                <ellipse
+                  cx="62"
+                  cy="35"
+                  rx={5 + Math.max(0, (growth - 0.85) / 0.15) * 3}
+                  ry={6 + Math.max(0, (growth - 0.85) / 0.15) * 4}
+                  fill="#064e3b"
+                  opacity={0.8 * Math.max(0, (growth - 0.85) / 0.15)}
+                  className="transition-all duration-600 ease-out"
+                />
+                
+                {/* Center top leaf */}
+                <path
+                  d="M 50 58 Q 50 38 50 30"
+                  fill="none"
+                  stroke="#065f46"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  opacity={Math.max(0, (growth - 0.92) / 0.08)}
+                  className="transition-all duration-500 ease-out"
+                />
+                <ellipse
+                  cx="50"
+                  cy="30"
+                  rx={4 + Math.max(0, (growth - 0.92) / 0.08) * 3}
+                  ry={5 + Math.max(0, (growth - 0.92) / 0.08) * 4}
+                  fill="#065f46"
+                  opacity={0.85 * Math.max(0, (growth - 0.92) / 0.08)}
+                  className="transition-all duration-500 ease-out"
+                />
               </>
             )}
           </svg>
         </div>
 
-        {/* NEXUS Text */}
+        {/* NEXUS Text - elegant fade in */}
         <div 
-          className="font-tesla font-bold text-2xl md:text-3xl text-white tracking-wider mb-6 transition-opacity duration-500"
+          className="font-tesla font-bold text-xl md:text-2xl text-white/90 tracking-[0.2em] mb-6 transition-opacity duration-700"
           style={{ 
             fontFamily: 'Barlow',
-            opacity: Math.min(progress / 30, 1)
+            opacity: Math.min(progress / 40, 1),
+            letterSpacing: '0.2em'
           }}
         >
           NEXUS
         </div>
 
-        {/* Loading Progress Bar */}
-        <div className="w-56 h-1.5 bg-white/10 rounded-full overflow-hidden">
+        {/* Minimal progress bar */}
+        <div className="w-40 h-0.5 bg-white/5 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-green-400 transition-all duration-300 ease-out shadow-lg"
-            style={{ 
-              width: `${progress}%`,
-              boxShadow: `0 0 10px rgba(16, 185, 129, ${progress / 100})`
-            }}
+            className="h-full bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-700 transition-all duration-300 ease-out"
+            style={{ width: `${progress}%` }}
           />
         </div>
       </div>
