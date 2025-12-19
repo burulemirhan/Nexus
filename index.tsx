@@ -8,7 +8,6 @@ import TurnkeyProjects from './pages/TurnkeyProjects';
 import DefenseProjects from './pages/DefenseProjects';
 import ConsultingProjectManagement from './pages/ConsultingProjectManagement';
 import ScrollToTop from './components/ScrollToTop';
-import LoadingScreen from './components/LoadingScreen';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -22,7 +21,6 @@ const basePath = import.meta.env.BASE_URL || '/';
 
 root.render(
   <React.StrictMode>
-    <LoadingScreen />
     <BrowserRouter basename={basePath}>
       <ScrollToTop />
       <Routes>

@@ -9,6 +9,7 @@ import DefenseSpace from './components/DefenseSpace';
 import Services from './components/Services';
 import Footer from './components/Footer';
 import SEOHead from './components/SEOHead';
+import LoadingScreen from './components/LoadingScreen';
 import Lenis from 'lenis';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
@@ -67,6 +68,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-nexus-copper selection:text-white font-tech text-white">
+      <LoadingScreen />
       <SEOHead />
       
       {/* Global Background Video (Vertical Farming Theme) */}
