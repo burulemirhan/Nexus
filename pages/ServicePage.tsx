@@ -49,26 +49,35 @@ const ServicePage: React.FC<ServicePageProps> = ({
 
   // Set scroll position synchronously before browser paints
   useLayoutEffect(() => {
+    // Disable smooth scrolling temporarily
+    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    
     // Set scroll position immediately without any animation or delay
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
     
-    // Also reset Lenis if it exists
+    // Also reset Lenis if it exists - do this BEFORE restoring scroll behavior
     if (lenisRef.current) {
-      lenisRef.current.scrollTo(0, { immediate: true });
+      try {
+        lenisRef.current.scrollTo(0, { immediate: true });
+      } catch (e) {
+        // Lenis might not be fully initialized yet
+      }
     }
     
-    // Disable smooth scrolling temporarily
-    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior = 'auto';
-    
-    // Force immediate scroll
+    // Force immediate scroll again
     window.scrollTo(0, 0);
     
     // Restore original scroll behavior after setting position
     setTimeout(() => {
       document.documentElement.style.scrollBehavior = originalScrollBehavior;
+      // One more scroll reset after scroll behavior is restored
+      window.scrollTo(0, 0);
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(0, { immediate: true });
+      }
     }, 0);
   }, [location.pathname]);
 
@@ -92,17 +101,14 @@ const ServicePage: React.FC<ServicePageProps> = ({
 
   useEffect(() => {
     // Ensure we start at top BEFORE initializing Lenis
-    // Do this multiple times to ensure it sticks
+    // Disable smooth scrolling before reset
+    const originalScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    
+    // Reset scroll multiple times to ensure it sticks
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-    
-    // Force scroll reset again after a microtask
-    Promise.resolve().then(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    });
 
     const lenis = new Lenis({
       duration: 1.0,
@@ -117,20 +123,24 @@ const ServicePage: React.FC<ServicePageProps> = ({
     lenisRef.current = lenis;
 
     // Set scroll position to 0 immediately when Lenis initializes
-    // Multiple attempts to ensure it works
     lenis.scrollTo(0, { immediate: true });
+    
+    // Restore scroll behavior and ensure we're at top
     setTimeout(() => {
-      lenis.scrollTo(0, { immediate: true });
+      document.documentElement.style.scrollBehavior = originalScrollBehavior;
       window.scrollTo(0, 0);
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
+      lenis.scrollTo(0, { immediate: true });
     }, 0);
     
-    // One more attempt after Lenis has had time to initialize
+    // Final check after a short delay
     setTimeout(() => {
-      lenis.scrollTo(0, { immediate: true });
       window.scrollTo(0, 0);
-    }, 100);
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(0, { immediate: true });
+      }
+    }, 50);
 
     function raf(time: number) {
       lenis.raf(time);

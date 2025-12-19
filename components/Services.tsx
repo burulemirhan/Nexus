@@ -53,7 +53,13 @@ const Services: React.FC = () => {
           {services.map((service) => (
             <div 
               key={service.id} 
-              onClick={() => navigate(service.path)}
+              onClick={() => {
+                // Reset scroll position before navigation
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+                navigate(service.path);
+              }}
               className="group flex flex-col md:flex-row md:items-center justify-between border-t border-white/10 py-7 md:py-8 hover:bg-white/5 transition-colors cursor-pointer"
             >
               <div className="flex items-baseline gap-4 md:gap-8">
