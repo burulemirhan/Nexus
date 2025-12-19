@@ -71,7 +71,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
     
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2 + (random() - 0.5) * 0.3;
-      const maxLength = 80 + random() * 60; // 80-140px
+      const maxLength = 150 + random() * 100; // 150-250px (longer arms)
       const curve = (random() - 0.5) * 0.4; // -0.2 to 0.2 curvature
       
       branches.push({
@@ -173,7 +173,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
     }
 
     // Full animation
-    const branchCount = 8; // Deterministic count
+    const branchCount = 18; // More arms for richer network
     let branches = generateBranches(branchCount, 42); // Seed: 42
     const cycleDuration = 3000; // 3 seconds per cycle (growth + fade)
     const growthPhase = 0.5; // First 50% is growth, rest is fade
@@ -250,14 +250,14 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
         const curveX = midX + Math.cos(perpAngle) * curveOffset;
         const curveY = midY + Math.sin(perpAngle) * curveOffset;
 
-        // Draw curved branch
+        // Draw curved branch - white arms
         ctx.save();
         ctx.globalAlpha = opacity * 0.9;
-        ctx.strokeStyle = EMERALD_PRIMARY;
+        ctx.strokeStyle = '#ffffff'; // White arms
         ctx.lineWidth = 1.5;
         ctx.lineCap = 'round';
         ctx.shadowBlur = 3;
-        ctx.shadowColor = `rgba(52, 211, 153, ${opacity * 0.5})`; // Soft glow
+        ctx.shadowColor = `rgba(255, 255, 255, ${opacity * 0.3})`; // Soft white glow
 
         ctx.beginPath();
         ctx.moveTo(startX, startY);
@@ -267,28 +267,28 @@ const Preloader: React.FC<PreloaderProps> = ({ onDone, minDuration = 2000 }) => 
         ctx.shadowBlur = 0;
         ctx.restore();
 
-        // Draw end dot
+        // Draw end dot - white (matching the arms)
         if (branch.dotProgress > 0 && branch.endDotSize > 0) {
           ctx.save();
           const dotOpacity = opacity * branch.dotProgress;
           ctx.globalAlpha = dotOpacity;
 
-          // Dot halo
+          // Dot halo - white
           const dotGradient = ctx.createRadialGradient(
             endX, endY, 0,
             endX, endY, branch.endDotSize * 2.5
           );
-          dotGradient.addColorStop(0, `rgba(52, 211, 153, ${dotOpacity * 0.4})`);
-          dotGradient.addColorStop(0.6, `rgba(16, 185, 129, ${dotOpacity * 0.15})`);
-          dotGradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+          dotGradient.addColorStop(0, `rgba(255, 255, 255, ${dotOpacity * 0.4})`);
+          dotGradient.addColorStop(0.6, `rgba(255, 255, 255, ${dotOpacity * 0.15})`);
+          dotGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
           
           ctx.fillStyle = dotGradient;
           ctx.beginPath();
           ctx.arc(endX, endY, branch.endDotSize * 2.5, 0, Math.PI * 2);
           ctx.fill();
 
-          // Dot core
-          ctx.fillStyle = EMERALD_PRIMARY;
+          // Dot core - white
+          ctx.fillStyle = '#ffffff';
           ctx.beginPath();
           ctx.arc(endX, endY, branch.endDotSize, 0, Math.PI * 2);
           ctx.fill();
