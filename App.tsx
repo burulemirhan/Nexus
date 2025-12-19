@@ -80,8 +80,8 @@ const App: React.FC = () => {
             aria-hidden="true"
           >
             <source src="/assets/videos/bg.mp4" type="video/mp4" />
-            {/* Fallback stock video of vertical farming/technology */}
-            <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
+             {/* Fallback stock video of vertical farming/technology */}
+             <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
           </video>
         </div>
 
