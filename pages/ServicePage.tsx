@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useLayoutEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
+import LoadingScreen from '../components/LoadingScreen';
 import { useLanguage } from '../contexts/LanguageContext';
-import { preloadImage } from '../utils/preloadAssets';
 import Lenis from 'lenis';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
@@ -43,36 +43,62 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const lenisRef = useRef<Lenis | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Helper function to prepend BASE_URL to paths starting with / (memoized)
-  const getAssetPath = useCallback((path: string | undefined): string | undefined => {
+  // Helper function to prepend BASE_URL to paths starting with /
+  const getAssetPath = (path: string | undefined): string | undefined => {
     if (!path) return path;
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
     if (path.startsWith('/')) return `${BASE_URL}${path.substring(1)}`;
     return `${BASE_URL}${path}`;
-  }, []);
+  };
 
-  // Preload ONLY hero background image (most critical) - much faster
+  // Preload critical assets (hero background image and video if needed)
   useEffect(() => {
-    const loadHeroImage = async () => {
-      try {
-        if (heroBackgroundImage) {
-          await preloadImage(getAssetPath(heroBackgroundImage)!);
-        }
-      } catch (error) {
-        // Silently fail - image will load normally
-      } finally {
-        setIsLoading(false);
+    const assetsToLoad: Promise<void>[] = [];
+    
+    // Preload hero background image if present
+    if (heroBackgroundImage) {
+      const imgPath = getAssetPath(heroBackgroundImage);
+      if (imgPath) {
+        const imgPromise = new Promise<void>((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve(); // Still resolve if image fails
+          img.src = imgPath;
+        });
+        assetsToLoad.push(imgPromise);
       }
+    }
+    
+    // Preload background video if not white background
+    if (customBackground !== 'white') {
+      const videoSrc = `${BASE_URL}assets/videos/bg.mp4`;
+      const videoPromise = new Promise<void>((resolve) => {
+        const video = document.createElement('video');
+        video.preload = 'auto';
+        video.src = videoSrc;
+        video.oncanplaythrough = () => resolve();
+        video.onerror = () => resolve(); // Still resolve if video fails
+        video.load();
+      });
+      assetsToLoad.push(videoPromise);
+    }
+    
+    // Wait for all assets to load, with timeout fallback
+    Promise.all(assetsToLoad).then(() => {
+      setIsLoading(false);
+    });
+    
+    // Timeout fallback - show page after 8 seconds even if assets haven't loaded
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 8000);
+    
+    return () => {
+      clearTimeout(timeout);
     };
-
-    // Small delay to allow initial render
-    const timer = setTimeout(() => {
-      loadHeroImage();
-    }, 50);
-
-    return () => clearTimeout(timer);
-  }, [heroBackgroundImage, getAssetPath]);
+  }, [heroBackgroundImage, customBackground]);
 
   // Prevent browser scroll restoration
   useEffect(() => {
@@ -201,41 +227,8 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const textColorClass = isWhiteBackground ? 'text-black' : 'text-white';
   const selectionClass = isWhiteBackground ? 'selection:bg-nexus-copper selection:text-black' : 'selection:bg-nexus-copper selection:text-white';
 
-  // Show loading screen until critical assets are loaded
   if (isLoading) {
-    return (
-      <div className={`fixed inset-0 z-50 ${isWhiteBackground ? 'bg-white' : 'bg-nexus-dark'} flex items-center justify-center`}>
-        <div className="flex flex-col items-center justify-center gap-8">
-          <div className="relative">
-            {/* Animated loading circle */}
-            <div className={`w-24 h-24 md:w-32 md:h-32 border-4 ${isWhiteBackground ? 'border-emerald-600/30 border-t-emerald-600' : 'border-emerald-500/30 border-t-emerald-500'} rounded-full animate-spin-fast`}></div>
-            {/* Inner circle */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className={`w-16 h-16 md:w-20 md:h-20 border-4 ${isWhiteBackground ? 'border-emerald-600/20 border-b-emerald-600' : 'border-emerald-500/20 border-b-emerald-500'} rounded-full animate-spin-fast-reverse`}></div>
-            </div>
-          </div>
-          <div className={`text-3xl md:text-5xl font-tesla tracking-widest animate-pulse ${textColorClass}`} style={{ fontFamily: 'Barlow' }}>
-            NEXUS
-          </div>
-        </div>
-        <style>{`
-          @keyframes spin-fast {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-          }
-          @keyframes spin-fast-reverse {
-            from { transform: rotate(360deg); }
-            to { transform: rotate(0deg); }
-          }
-          .animate-spin-fast {
-            animation: spin-fast 0.8s linear infinite;
-          }
-          .animate-spin-fast-reverse {
-            animation: spin-fast-reverse 0.6s linear infinite;
-          }
-        `}</style>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (
@@ -252,29 +245,18 @@ const ServicePage: React.FC<ServicePageProps> = ({
       ) : (
         <div className="fixed inset-0 z-0 select-none overflow-hidden bg-nexus-dark">
           <div className="absolute inset-0 w-full h-full">
-            {/* Poster image shown immediately */}
-            <img 
-              src={`${BASE_URL}assets/images/bg.png`}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover -z-50"
-              aria-hidden="true"
-              loading="eager"
-            />
-            {/* Video loads asynchronously */}
             <video 
+              ref={videoRef}
               autoPlay 
               loop 
               muted 
               playsInline
-              preload="metadata"
-              className="absolute inset-0 w-full h-full object-cover -z-50 opacity-0 transition-opacity duration-1000"
+              preload="auto"
+              className="w-full h-full object-cover -z-50"
               poster={`${BASE_URL}assets/images/bg.png`}
-              onLoadedData={(e) => {
-                e.currentTarget.classList.remove('opacity-0');
-                e.currentTarget.classList.add('opacity-100');
-              }}
             >
               <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
+              <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
             </video>
           </div>
           <div className="absolute inset-0 bg-nexus-dark/45 mix-blend-multiply" />

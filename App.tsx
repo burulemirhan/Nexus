@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -9,32 +9,56 @@ import DefenseSpace from './components/DefenseSpace';
 import Services from './components/Services';
 import Footer from './components/Footer';
 import SEOHead from './components/SEOHead';
-import { preloadImage } from './utils/preloadAssets';
+import LoadingScreen from './components/LoadingScreen';
 import Lenis from 'lenis';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const location = useLocation();
 
-  // Preload poster image only (much faster than video)
+  // Preload critical video asset
   useEffect(() => {
-    // Load poster image in background, don't block render
-    preloadImage(`${BASE_URL}assets/images/bg.png`).catch(() => {
-      // Silently fail - poster is just a fallback
-    });
+    const videoSrc = `${BASE_URL}assets/videos/bg.mp4`;
+    const video = document.createElement('video');
+    video.preload = 'auto';
+    video.src = videoSrc;
+    
+    const handleCanPlay = () => {
+      setIsLoading(false);
+    };
+    
+    const handleError = () => {
+      // If video fails, still show the page (fallback will work)
+      setIsLoading(false);
+    };
+    
+    video.addEventListener('canplaythrough', handleCanPlay);
+    video.addEventListener('error', handleError);
+    
+    // Start loading
+    video.load();
+    
+    // Timeout fallback - show page after 5 seconds even if video hasn't loaded
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
+    
+    return () => {
+      video.removeEventListener('canplaythrough', handleCanPlay);
+      video.removeEventListener('error', handleError);
+      clearTimeout(timeout);
+    };
   }, []);
 
-  // Update HTML lang attribute based on route (memoized)
-  const htmlLang = useMemo(() => 
-    location.pathname.startsWith('/en') ? 'en' : 'tr',
-    [location.pathname]
-  );
-
+  // Update HTML lang attribute based on route
   useEffect(() => {
+    const htmlLang = location.pathname.startsWith('/en') ? 'en' : 'tr';
     document.documentElement.lang = htmlLang;
-  }, [htmlLang]);
+  }, [location.pathname]);
 
   useEffect(() => {
     // Initialize Lenis for smooth scrolling
@@ -78,6 +102,10 @@ const App: React.FC = () => {
     };
   }, []);
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-nexus-copper selection:text-white font-tech text-white">
       <SEOHead />
@@ -85,32 +113,19 @@ const App: React.FC = () => {
       {/* Global Background Video (Vertical Farming Theme) */}
       <div className="fixed inset-0 z-0 select-none overflow-hidden bg-nexus-dark" aria-hidden="true">
         <div className="absolute inset-0 w-full h-full">
-          {/* Poster image shown immediately */}
-          <img 
-            src={`${BASE_URL}assets/images/bg.png`}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover -z-50"
-            aria-hidden="true"
-            loading="eager"
-            fetchPriority="high"
-          />
-          {/* Video loads asynchronously in background */}
           <video 
+            ref={videoRef}
             autoPlay 
             loop 
             muted 
             playsInline
-            preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover -z-50 opacity-0 transition-opacity duration-1000"
-            poster={`${BASE_URL}assets/images/bg.png`}
+            preload="auto"
+            className="w-full h-full object-cover -z-50"
             aria-hidden="true"
-            onLoadedData={(e) => {
-              // Fade in video once loaded
-              e.currentTarget.classList.remove('opacity-0');
-              e.currentTarget.classList.add('opacity-100');
-            }}
           >
             <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
+             {/* Fallback stock video of vertical farming/technology */}
+             <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
           </video>
         </div>
 
@@ -143,4 +158,4 @@ const App: React.FC = () => {
   );
 };
 
-export default React.memo(App);
+export default App;

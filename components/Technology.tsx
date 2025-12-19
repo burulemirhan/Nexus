@@ -4,7 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
-const Technology: React.FC = React.memo(() => {
+const Technology: React.FC = () => {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState(0);
 
@@ -136,10 +136,8 @@ const Technology: React.FC = React.memo(() => {
           </div>
 
        </div>
-      </section>
-    );
-});
-
-Technology.displayName = 'Technology';
+    </section>
+  );
+};
 
 export default Technology;
