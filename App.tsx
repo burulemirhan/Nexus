@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -9,37 +9,32 @@ import DefenseSpace from './components/DefenseSpace';
 import Services from './components/Services';
 import Footer from './components/Footer';
 import SEOHead from './components/SEOHead';
-import { preloadVideo } from './utils/preloadAssets';
+import { preloadImage } from './utils/preloadAssets';
 import Lenis from 'lenis';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
 
-  // Preload critical video before showing the page
+  // Preload poster image only (much faster than video)
   useEffect(() => {
-    const loadCriticalAssets = async () => {
-      try {
-        const videoSrc = `${BASE_URL}assets/videos/bg.mp4`;
-        await preloadVideo(videoSrc);
-      } catch (error) {
-        console.warn('Failed to preload video, continuing anyway:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadCriticalAssets();
+    // Load poster image in background, don't block render
+    preloadImage(`${BASE_URL}assets/images/bg.png`).catch(() => {
+      // Silently fail - poster is just a fallback
+    });
   }, []);
 
-  // Update HTML lang attribute based on route
+  // Update HTML lang attribute based on route (memoized)
+  const htmlLang = useMemo(() => 
+    location.pathname.startsWith('/en') ? 'en' : 'tr',
+    [location.pathname]
+  );
+
   useEffect(() => {
-    const htmlLang = location.pathname.startsWith('/en') ? 'en' : 'tr';
     document.documentElement.lang = htmlLang;
-  }, [location.pathname]);
+  }, [htmlLang]);
 
   useEffect(() => {
     // Initialize Lenis for smooth scrolling
@@ -83,43 +78,6 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Show loading screen until critical assets are loaded
-  if (isLoading) {
-    return (
-      <div className="fixed inset-0 z-50 bg-nexus-dark flex items-center justify-center">
-        <div className="flex flex-col items-center justify-center gap-12">
-          <div className="relative">
-            {/* Animated loading circle - 50% bigger */}
-            <div className="w-36 h-36 md:w-48 md:h-48 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin-fast"></div>
-            {/* Inner circle - 50% bigger */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-24 h-24 md:w-30 md:h-30 border-4 border-emerald-500/20 border-b-emerald-500 rounded-full animate-spin-fast-reverse"></div>
-            </div>
-          </div>
-          <div className="text-white text-4xl md:text-6xl font-tesla tracking-widest animate-pulse" style={{ fontFamily: 'Barlow' }}>
-            NEXUS
-          </div>
-        </div>
-        <style>{`
-          @keyframes spin-fast {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-          @keyframes spin-fast-reverse {
-            0% { transform: rotate(360deg); }
-            100% { transform: rotate(0deg); }
-          }
-          .animate-spin-fast {
-            animation: spin-fast 0.8s linear infinite;
-          }
-          .animate-spin-fast-reverse {
-            animation: spin-fast-reverse 0.6s linear infinite;
-          }
-        `}</style>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-nexus-copper selection:text-white font-tech text-white">
       <SEOHead />
@@ -127,18 +85,32 @@ const App: React.FC = () => {
       {/* Global Background Video (Vertical Farming Theme) */}
       <div className="fixed inset-0 z-0 select-none overflow-hidden bg-nexus-dark" aria-hidden="true">
         <div className="absolute inset-0 w-full h-full">
+          {/* Poster image shown immediately */}
+          <img 
+            src={`${BASE_URL}assets/images/bg.png`}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover -z-50"
+            aria-hidden="true"
+            loading="eager"
+            fetchPriority="high"
+          />
+          {/* Video loads asynchronously in background */}
           <video 
             autoPlay 
             loop 
             muted 
             playsInline
-            preload="auto"
-            className="w-full h-full object-cover -z-50"
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover -z-50 opacity-0 transition-opacity duration-1000"
+            poster={`${BASE_URL}assets/images/bg.png`}
             aria-hidden="true"
+            onLoadedData={(e) => {
+              // Fade in video once loaded
+              e.currentTarget.classList.remove('opacity-0');
+              e.currentTarget.classList.add('opacity-100');
+            }}
           >
             <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
-             {/* Fallback stock video of vertical farming/technology */}
-             <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
           </video>
         </div>
 
@@ -171,4 +143,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default React.memo(App);

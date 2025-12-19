@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SEOHead from '../components/SEOHead';
 import { useLanguage } from '../contexts/LanguageContext';
-import { preloadImage, preloadImages, preloadVideo } from '../utils/preloadAssets';
+import { preloadImage } from '../utils/preloadAssets';
 import Lenis from 'lenis';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
@@ -44,65 +44,35 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const lenisRef = useRef<Lenis | null>(null);
 
-  // Helper function to prepend BASE_URL to paths starting with /
-  const getAssetPath = (path: string | undefined): string | undefined => {
+  // Helper function to prepend BASE_URL to paths starting with / (memoized)
+  const getAssetPath = useCallback((path: string | undefined): string | undefined => {
     if (!path) return path;
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
     if (path.startsWith('/')) return `${BASE_URL}${path.substring(1)}`;
     return `${BASE_URL}${path}`;
-  };
+  }, []);
 
-  // Preload critical assets (hero background image) before showing the page
+  // Preload ONLY hero background image (most critical) - much faster
   useEffect(() => {
-    const loadCriticalAssets = async () => {
+    const loadHeroImage = async () => {
       try {
-        const assetsToLoad: string[] = [];
-        
-        // Helper to prepend BASE_URL
-        const getPath = (path: string | undefined): string | undefined => {
-          if (!path) return path;
-          if (path.startsWith('http://') || path.startsWith('https://')) return path;
-          if (path.startsWith('/')) return `${BASE_URL}${path.substring(1)}`;
-          return `${BASE_URL}${path}`;
-        };
-        
-        // Preload hero background image if provided (MOST CRITICAL)
         if (heroBackgroundImage) {
-          assetsToLoad.push(getPath(heroBackgroundImage)!);
-        }
-        
-        // Preload feature images if provided (first few critical ones)
-        if (featureImages && featureImages.length > 0) {
-          const criticalFeatureImages = featureImages.slice(0, 3);
-          assetsToLoad.push(...criticalFeatureImages.map(img => getPath(img)!));
-        }
-        
-        // Preload featureImagesMap images if provided (first few)
-        if (featureImagesMap) {
-          const criticalMapImages = Object.values(featureImagesMap).slice(0, 2);
-          assetsToLoad.push(...criticalMapImages.map(img => getPath(img)!));
-        }
-        
-        // Preload all critical images
-        await preloadImages(assetsToLoad.filter(Boolean) as string[]);
-        
-        // Load background video if not using white background (separate preload)
-        if (customBackground === 'default') {
-          try {
-            await preloadVideo(getPath('/assets/videos/bg.mp4')!);
-          } catch (error) {
-            console.warn('Failed to preload video, continuing anyway:', error);
-          }
+          await preloadImage(getAssetPath(heroBackgroundImage)!);
         }
       } catch (error) {
-        console.warn('Failed to preload some assets, continuing anyway:', error);
+        // Silently fail - image will load normally
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadCriticalAssets();
-  }, [heroBackgroundImage, featureImages, featureImagesMap, customBackground]);
+    // Small delay to allow initial render
+    const timer = setTimeout(() => {
+      loadHeroImage();
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [heroBackgroundImage, getAssetPath]);
 
   // Prevent browser scroll restoration
   useEffect(() => {
@@ -235,27 +205,27 @@ const ServicePage: React.FC<ServicePageProps> = ({
   if (isLoading) {
     return (
       <div className={`fixed inset-0 z-50 ${isWhiteBackground ? 'bg-white' : 'bg-nexus-dark'} flex items-center justify-center`}>
-        <div className="flex flex-col items-center justify-center gap-12">
+        <div className="flex flex-col items-center justify-center gap-8">
           <div className="relative">
-            {/* Animated loading circle - 50% bigger */}
-            <div className={`w-36 h-36 md:w-48 md:h-48 border-4 ${isWhiteBackground ? 'border-emerald-600/30 border-t-emerald-600' : 'border-emerald-500/30 border-t-emerald-500'} rounded-full animate-spin-fast`}></div>
-            {/* Inner circle - 50% bigger */}
+            {/* Animated loading circle */}
+            <div className={`w-24 h-24 md:w-32 md:h-32 border-4 ${isWhiteBackground ? 'border-emerald-600/30 border-t-emerald-600' : 'border-emerald-500/30 border-t-emerald-500'} rounded-full animate-spin-fast`}></div>
+            {/* Inner circle */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className={`w-24 h-24 md:w-30 md:h-30 border-4 ${isWhiteBackground ? 'border-emerald-600/20 border-b-emerald-600' : 'border-emerald-500/20 border-b-emerald-500'} rounded-full animate-spin-fast-reverse`}></div>
+              <div className={`w-16 h-16 md:w-20 md:h-20 border-4 ${isWhiteBackground ? 'border-emerald-600/20 border-b-emerald-600' : 'border-emerald-500/20 border-b-emerald-500'} rounded-full animate-spin-fast-reverse`}></div>
             </div>
           </div>
-          <div className={`text-4xl md:text-6xl font-tesla tracking-widest animate-pulse ${textColorClass}`} style={{ fontFamily: 'Barlow' }}>
+          <div className={`text-3xl md:text-5xl font-tesla tracking-widest animate-pulse ${textColorClass}`} style={{ fontFamily: 'Barlow' }}>
             NEXUS
           </div>
         </div>
         <style>{`
           @keyframes spin-fast {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
           }
           @keyframes spin-fast-reverse {
-            0% { transform: rotate(360deg); }
-            100% { transform: rotate(0deg); }
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
           }
           .animate-spin-fast {
             animation: spin-fast 0.8s linear infinite;
@@ -282,16 +252,29 @@ const ServicePage: React.FC<ServicePageProps> = ({
       ) : (
         <div className="fixed inset-0 z-0 select-none overflow-hidden bg-nexus-dark">
           <div className="absolute inset-0 w-full h-full">
+            {/* Poster image shown immediately */}
+            <img 
+              src={`${BASE_URL}assets/images/bg.png`}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover -z-50"
+              aria-hidden="true"
+              loading="eager"
+            />
+            {/* Video loads asynchronously */}
             <video 
               autoPlay 
               loop 
               muted 
               playsInline
-              className="w-full h-full object-cover -z-50"
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover -z-50 opacity-0 transition-opacity duration-1000"
               poster={`${BASE_URL}assets/images/bg.png`}
+              onLoadedData={(e) => {
+                e.currentTarget.classList.remove('opacity-0');
+                e.currentTarget.classList.add('opacity-100');
+              }}
             >
               <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
-              <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
             </video>
           </div>
           <div className="absolute inset-0 bg-nexus-dark/45 mix-blend-multiply" />

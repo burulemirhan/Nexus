@@ -3,18 +3,18 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const BASE_URL = import.meta.env.BASE_URL || '/';
 
-const DefenseSpace: React.FC = () => {
+const DefenseSpace: React.FC = React.memo(() => {
   const { t } = useLanguage();
   const [animatedDefenseTitle, setAnimatedDefenseTitle] = useState(t('defense.defense'));
 
-  // Text scrambling animation for SAVUNMA/DEFENSE title
+  // Text scrambling animation for SAVUNMA/DEFENSE title (optimized with useCallback)
   useEffect(() => {
     const original = t('defense.defense');
     setAnimatedDefenseTitle(original);
 
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const frameDuration = 40; // ~25 fps
-    const animationDuration = 2000; // 2s scramble before resolving
+    const frameDuration = 50; // Slightly slower to reduce CPU usage
+    const animationDuration = 2000;
     const totalFrames = Math.round(animationDuration / frameDuration);
 
     const runAnimationOnce = () => {
@@ -47,8 +47,8 @@ const DefenseSpace: React.FC = () => {
 
     // initial run
     runAnimationOnce();
-    // repeat every ~5s
-    const loop = setInterval(runAnimationOnce, 5000);
+    // repeat every ~6s (less frequent to reduce CPU usage)
+    const loop = setInterval(runAnimationOnce, 6000);
 
     return () => {
       clearInterval(loop);
@@ -163,7 +163,7 @@ const DefenseSpace: React.FC = () => {
                    muted
                    loop
                    playsInline
-                   preload="none"
+                   preload="metadata"
                    aria-hidden="true"
                  />
                  <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/20 pointer-events-none" />
@@ -196,6 +196,8 @@ const DefenseSpace: React.FC = () => {
       `}</style>
     </section>
   );
-};
+});
+
+DefenseSpace.displayName = 'DefenseSpace';
 
 export default DefenseSpace;

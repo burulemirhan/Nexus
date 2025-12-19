@@ -28,12 +28,14 @@ export default defineConfig(({ mode }) => {
       build: {
         // Output directory
         outDir: 'dist',
-        // Optimize chunk size
+        // Optimize chunk size with better code splitting
         rollupOptions: {
           output: {
             manualChunks: {
-              vendor: ['react', 'react-dom', 'react-router-dom'],
-              lenis: ['lenis'],
+              'react-vendor': ['react', 'react-dom'],
+              'router': ['react-router-dom'],
+              'lenis': ['lenis'],
+              'icons': ['lucide-react'],
             },
           },
         },

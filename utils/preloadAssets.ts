@@ -17,6 +17,7 @@ export const preloadImage = (src: string): Promise<void> => {
 
 /**
  * Preloads a video and returns a promise that resolves when it can play
+ * Note: Videos are now loaded with preload="metadata" in components for better performance
  */
 export const preloadVideo = (src: string): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -26,12 +27,20 @@ export const preloadVideo = (src: string): Promise<void> => {
     }
     
     const video = document.createElement('video');
-    video.preload = 'auto';
+    video.preload = 'metadata'; // Changed from 'auto' to 'metadata' for faster initial load
     video.muted = true;
-    video.oncanplaythrough = () => resolve();
+    // Resolve on canplay (enough loaded to start), not canplaythrough (fully buffered)
+    video.oncanplay = () => resolve();
     video.onerror = () => reject(new Error(`Failed to load video: ${src}`));
     video.src = src;
     video.load();
+    
+    // Timeout after 5 seconds to prevent hanging
+    setTimeout(() => {
+      if (video.readyState < 2) { // HAVE_CURRENT_DATA
+        reject(new Error(`Video preload timeout: ${src}`));
+      }
+    }, 5000);
   });
 };
 
