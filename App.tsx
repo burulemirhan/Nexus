@@ -9,7 +9,7 @@ import DefenseSpace from './components/DefenseSpace';
 import Services from './components/Services';
 import Footer from './components/Footer';
 import SEOHead from './components/SEOHead';
-import LoadingAnimation from './components/LoadingAnimation';
+import Preloader from './components/Preloader';
 import Lenis from 'lenis';
 
 // @ts-ignore - Vite provides BASE_URL via import.meta.env
@@ -17,7 +17,7 @@ const BASE_URL = import.meta.env.BASE_URL || '/';
 
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [showPreloader, setShowPreloader] = useState(true);
   const location = useLocation();
 
   // Update HTML lang attribute based on route
@@ -25,28 +25,6 @@ const App: React.FC = () => {
     const htmlLang = location.pathname.startsWith('/en') ? 'en' : 'tr';
     document.documentElement.lang = htmlLang;
   }, [location.pathname]);
-
-  // Hide loading animation once page is ready
-  useEffect(() => {
-    const hideLoader = () => {
-      setTimeout(() => setIsLoading(false), 800); // Minimum time to show the animation elegantly
-    };
-
-    // Hide when everything is loaded
-    if (document.readyState === 'complete') {
-      hideLoader();
-    } else {
-      window.addEventListener('load', hideLoader);
-    }
-
-    // Also hide after minimum display time even if page loads faster
-    const timer = setTimeout(hideLoader, 1200);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('load', hideLoader);
-    };
-  }, []);
 
   useEffect(() => {
     // Initialize Lenis for smooth scrolling
@@ -92,7 +70,12 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-nexus-copper selection:text-white font-tech text-white">
-      <LoadingAnimation isLoading={isLoading} size={100} />
+      {showPreloader && (
+        <Preloader 
+          onDone={() => setShowPreloader(false)}
+          minDuration={2000}
+        />
+      )}
       <SEOHead />
       
       {/* Global Background Video (Vertical Farming Theme) */}
