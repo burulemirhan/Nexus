@@ -15,6 +15,7 @@ const BASE_URL = import.meta.env.BASE_URL || '/';
 
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const location = useLocation();
 
   // Update HTML lang attribute based on route
@@ -78,13 +79,19 @@ const App: React.FC = () => {
             muted 
             playsInline
             preload="auto"
-            className="w-full h-full object-cover -z-50"
+            className={`w-full h-full object-cover -z-50 transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
             aria-hidden="true"
+            onLoadedData={() => setVideoLoaded(true)}
+            onCanPlay={() => setVideoLoaded(true)}
           >
             <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
              {/* Fallback stock video of vertical farming/technology */}
              <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
           </video>
+          {/* Fallback background while video loads */}
+          {!videoLoaded && (
+            <div className="absolute inset-0 bg-nexus-dark -z-40" />
+          )}
         </div>
 
         {/* Heavy Overlay for Dark Theme */}

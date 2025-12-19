@@ -40,6 +40,7 @@ const ServicePage: React.FC<ServicePageProps> = ({
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const lenisRef = useRef<Lenis | null>(null);
 
   // Helper function to prepend BASE_URL to paths starting with /
@@ -49,6 +50,33 @@ const ServicePage: React.FC<ServicePageProps> = ({
     if (path.startsWith('/')) return `${BASE_URL}${path.substring(1)}`;
     return `${BASE_URL}${path}`;
   };
+
+  // Preload hero image when component mounts or route changes
+  useEffect(() => {
+    setHeroImageLoaded(false); // Reset when route changes
+    if (heroBackgroundImage) {
+      // Helper to get asset path inline
+      let imagePath: string | undefined;
+      if (heroBackgroundImage.startsWith('http://') || heroBackgroundImage.startsWith('https://')) {
+        imagePath = heroBackgroundImage;
+      } else if (heroBackgroundImage.startsWith('/')) {
+        imagePath = `${BASE_URL}${heroBackgroundImage.substring(1)}`;
+      } else {
+        imagePath = `${BASE_URL}${heroBackgroundImage}`;
+      }
+      
+      if (imagePath) {
+        const img = new Image();
+        img.onload = () => setHeroImageLoaded(true);
+        img.onerror = () => setHeroImageLoaded(true); // Show content even if image fails
+        img.src = imagePath;
+      } else {
+        setHeroImageLoaded(true);
+      }
+    } else {
+      setHeroImageLoaded(true);
+    }
+  }, [heroBackgroundImage, location.pathname]);
 
   // Prevent browser scroll restoration
   useEffect(() => {
@@ -183,6 +211,7 @@ const ServicePage: React.FC<ServicePageProps> = ({
         titleKey={titleKey} 
         descriptionKey={subtitleKey}
         image={heroBackgroundImage}
+        preloadImages={heroBackgroundImage ? [heroBackgroundImage] : []}
       />
       
       {/* Global Background */}
@@ -220,18 +249,20 @@ const ServicePage: React.FC<ServicePageProps> = ({
         {/* Hero Section */}
         <section className="relative min-h-screen flex items-start justify-center overflow-hidden pt-20">
           {heroBackgroundImage && (
-            <div className="absolute inset-0 z-0">
+            <>
+              <div className="absolute inset-0 z-0 bg-nexus-dark" />
               <img 
                 src={getAssetPath(heroBackgroundImage)}
                 alt=""
-                className="w-full h-full object-cover"
+                className={`absolute inset-0 z-0 w-full h-full object-cover transition-opacity duration-500 ${heroImageLoaded ? 'opacity-100' : 'opacity-0'}`}
                 loading="eager"
-                decoding="async"
+                decoding="sync"
                 fetchPriority="high"
+                onLoad={() => setHeroImageLoaded(true)}
               />
-            </div>
+            </>
           )}
-          <div className="w-full px-6 md:px-12 relative z-10 flex flex-col items-center justify-start min-h-full pt-12 md:pt-16">
+          <div className={`w-full px-6 md:px-12 relative z-10 flex flex-col items-center justify-start min-h-full pt-12 md:pt-16 transition-opacity duration-300 ${heroBackgroundImage && !heroImageLoaded ? 'opacity-0' : 'opacity-100'}`}>
             <div className="max-w-[90rem] mx-auto w-full text-center">
               <h1 className={`font-tesla font-bold text-4xl md:text-6xl ${isWhiteBackground ? 'text-black' : 'text-white'} uppercase tracking-wider ${isWhiteBackground ? '' : 'drop-shadow-2xl'} leading-[0.9]`} style={{ fontFamily: 'Barlow' }}>
                 {t(titleKey)}
