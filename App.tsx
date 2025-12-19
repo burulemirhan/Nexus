@@ -98,8 +98,17 @@ const App: React.FC = () => {
                 video.removeAttribute('controls');
                 video.style.pointerEvents = 'none';
                 video.style.outline = 'none';
+                // Safari fix for object-cover
+                video.style.position = 'absolute';
+                video.style.top = '50%';
+                video.style.left = '50%';
+                video.style.width = '100%';
+                video.style.height = '100%';
+                video.style.minWidth = '100%';
+                video.style.minHeight = '100%';
+                video.style.objectFit = 'cover';
                 // Performance optimizations
-                video.style.transform = 'translateZ(0)';
+                video.style.transform = 'translate(-50%, -50%) translateZ(0)';
                 video.style.willChange = 'auto';
                 
                 // Ensure video plays and stays playing
@@ -135,9 +144,21 @@ const App: React.FC = () => {
             muted 
             playsInline
             preload="auto"
-            className="w-full h-full object-cover -z-50"
+            className="object-cover -z-50"
             aria-hidden="true"
-            style={{ pointerEvents: 'none', outline: 'none', transform: 'translateZ(0)' }}
+            style={{ 
+              pointerEvents: 'none', 
+              outline: 'none',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: '100%',
+              height: '100%',
+              minWidth: '100%',
+              minHeight: '100%',
+              transform: 'translate(-50%, -50%) translateZ(0)',
+              objectFit: 'cover'
+            }}
           >
             <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
              {/* Fallback stock video of vertical farming/technology */}

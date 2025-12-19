@@ -168,8 +168,17 @@ const DefenseSpace: React.FC = () => {
                        video.removeAttribute('controls');
                        video.style.pointerEvents = 'none';
                        video.style.outline = 'none';
+                       // Safari fix for object-cover
+                       video.style.position = 'absolute';
+                       video.style.top = '50%';
+                       video.style.left = '50%';
+                       video.style.width = '100%';
+                       video.style.height = '100%';
+                       video.style.minWidth = '100%';
+                       video.style.minHeight = '100%';
+                       video.style.objectFit = 'cover';
                        // Performance optimizations
-                       video.style.transform = 'translateZ(0)';
+                       video.style.transform = 'translate(-50%, -50%) translateZ(0)';
                        video.style.willChange = 'auto';
                        
                        // Ensure video plays and stays playing
@@ -200,7 +209,7 @@ const DefenseSpace: React.FC = () => {
                      }
                    }}
                    controls={false}
-                   className="absolute inset-0 w-full h-full object-cover opacity-90"
+                   className="object-cover opacity-90"
                    src={`${BASE_URL}assets/videos/moon.mp4`}
                    autoPlay
                    muted
@@ -208,7 +217,19 @@ const DefenseSpace: React.FC = () => {
                    playsInline
                    preload="auto"
                    aria-hidden="true"
-                   style={{ pointerEvents: 'none', outline: 'none', transform: 'translateZ(0)' }}
+                   style={{ 
+                     pointerEvents: 'none', 
+                     outline: 'none',
+                     position: 'absolute',
+                     top: '50%',
+                     left: '50%',
+                     width: '100%',
+                     height: '100%',
+                     minWidth: '100%',
+                     minHeight: '100%',
+                     transform: 'translate(-50%, -50%) translateZ(0)',
+                     objectFit: 'cover'
+                   }}
                  />
                  <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/20 pointer-events-none" />
 

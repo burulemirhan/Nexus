@@ -207,8 +207,17 @@ const ServicePage: React.FC<ServicePageProps> = ({
                   video.removeAttribute('controls');
                   video.style.pointerEvents = 'none';
                   video.style.outline = 'none';
+                  // Safari fix for object-cover
+                  video.style.position = 'absolute';
+                  video.style.top = '50%';
+                  video.style.left = '50%';
+                  video.style.width = '100%';
+                  video.style.height = '100%';
+                  video.style.minWidth = '100%';
+                  video.style.minHeight = '100%';
+                  video.style.objectFit = 'cover';
                   // Performance optimizations
-                  video.style.transform = 'translateZ(0)';
+                  video.style.transform = 'translate(-50%, -50%) translateZ(0)';
                   video.style.willChange = 'auto';
                   
                   // Ensure video plays and stays playing
@@ -243,9 +252,21 @@ const ServicePage: React.FC<ServicePageProps> = ({
               loop 
               muted 
               playsInline
-              className="w-full h-full object-cover -z-50"
+              className="object-cover -z-50"
               poster={getAssetPath(`${BASE_URL}assets/images/bg.avif`)}
-              style={{ pointerEvents: 'none', outline: 'none', transform: 'translateZ(0)' }}
+              style={{ 
+                pointerEvents: 'none', 
+                outline: 'none',
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                width: '100%',
+                height: '100%',
+                minWidth: '100%',
+                minHeight: '100%',
+                transform: 'translate(-50%, -50%) translateZ(0)',
+                objectFit: 'cover'
+              }}
             >
               <source src={getAssetPath(`${BASE_URL}assets/videos/bg.mp4`)} type="video/mp4" />
               <source src="https://videos.pexels.com/video-files/5427845/5427845-uhd_2560_1440_24fps.mp4" type="video/mp4" />
@@ -279,10 +300,17 @@ const ServicePage: React.FC<ServicePageProps> = ({
               <img 
                 src={getAssetPath(heroBackgroundImage)}
                 alt=""
-                className="w-full h-full object-cover"
+                className="object-cover"
                 loading="eager"
                 decoding="async"
                 fetchPriority="high"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  minWidth: '100%',
+                  minHeight: '100%',
+                  objectFit: 'cover'
+                }}
               />
             </div>
           )}
@@ -319,7 +347,14 @@ const ServicePage: React.FC<ServicePageProps> = ({
                                 alt={t(`${key}.title`)}
                                 loading="lazy"
                                 decoding="async"
-                                className="w-full h-full object-cover"
+                                className="object-cover"
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  minWidth: '100%',
+                                  minHeight: '100%',
+                                  objectFit: 'cover'
+                                }}
                               />
                             </div>
                           </div>
@@ -356,7 +391,14 @@ const ServicePage: React.FC<ServicePageProps> = ({
                             alt={`Feature ${index + 1}`}
                             loading="lazy"
                             decoding="async"
-                            className="w-full h-full object-cover"
+                            className="object-cover"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              minWidth: '100%',
+                              minHeight: '100%',
+                              objectFit: 'cover'
+                            }}
                           />
                         </div>
                       ))}

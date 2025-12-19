@@ -125,7 +125,14 @@ const Technology: React.FC = () => {
                         alt={`${activeTech.name} - ${activeTech.subtitle}`}
                         loading="lazy"
                         decoding="async"
-                        className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 scale-105 group-hover:scale-100 transition-transform duration-700"
+                        className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500 scale-105 group-hover:scale-100 transition-transform duration-700"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          minWidth: '100%',
+                          minHeight: '100%',
+                          objectFit: 'cover'
+                        }}
                     />
                     
                     {/* Noise Overlay for Consistency */}
