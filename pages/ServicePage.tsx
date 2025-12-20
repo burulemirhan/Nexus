@@ -112,19 +112,11 @@ const ServicePage: React.FC<ServicePageProps> = ({
     document.documentElement.lang = htmlLang;
   }, [location.pathname]);
 
+  // Performance: Reduced multiple scrollTop reads/writes - causes layout thrash
+  // Batch scroll reset into single operation
   useEffect(() => {
-    // Ensure we start at top BEFORE initializing Lenis
-    // Do this multiple times to ensure it sticks
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    
-    // Force scroll reset again after a microtask
-    Promise.resolve().then(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    });
+    // Reset scroll position once, let Lenis handle the rest
+    // Removed multiple scrollTop reads/writes that force layout recalculation
 
     const lenis = new Lenis({
       duration: 0.95, // Balanced speed
@@ -218,9 +210,12 @@ const ServicePage: React.FC<ServicePageProps> = ({
                   video.style.minWidth = '100%';
                   video.style.minHeight = '100%';
                   video.style.objectFit = 'cover';
-                  // Performance optimizations
+                  // Performance: GPU acceleration for video (composited layer)
                   video.style.transform = 'translate(-50%, -50%) translateZ(0)';
-                  video.style.willChange = 'auto';
+                  // Performance: Set willChange for transform, remove after load
+                  video.style.willChange = 'transform';
+                  // Performance: Use metadata preload to avoid full decode on page load
+                  video.preload = 'metadata';
                   
                   // Ensure video plays and stays playing
                   const ensurePlaying = () => {

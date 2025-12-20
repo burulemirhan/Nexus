@@ -36,21 +36,24 @@ img, video {
   display: block;
 }
 
-/* Reduce layout shift for images - optimized for performance */
+/* Performance: Only apply GPU acceleration to images that need it (not all) */
+/* Removed content-visibility: auto from all images - causes issues with visible images */
 img {
-  content-visibility: auto;
-  transform: translateZ(0);
+  /* Removed transform: translateZ(0) - creates unnecessary compositing layers */
+  /* Only apply GPU acceleration to images that are animated or in fixed positions */
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-/* Smooth scroll behavior - disabled when using Lenis */
+/* Performance: Disable smooth scroll when Lenis is active */
+/* Smooth scroll can conflict with Lenis and cause jank */
 html.lenis {
   scroll-behavior: auto !important;
 }
 
 html:not(.lenis) {
-  scroll-behavior: smooth;
+  /* Keep smooth scroll as fallback only when Lenis not loaded */
+  scroll-behavior: auto; /* Changed from smooth for better performance */
 }
 
 /* Focus styles for accessibility */
@@ -126,9 +129,9 @@ html.lenis {
   pointer-events: none;
 }
 
-/* Performance optimizations - GPU acceleration */
+/* Performance: GPU acceleration for video only where needed */
 video {
-  transform: translateZ(0);
+  /* Video already has transform in inline styles, avoid duplicate */
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -146,12 +149,6 @@ video.object-cover {
   transform: translate(-50%, -50%) translateZ(0) !important;
 }
 
-img {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
 /* Safari fix for image object-cover zoom issue */
 img.object-cover {
   object-fit: cover !important;
@@ -159,48 +156,64 @@ img.object-cover {
   height: 100% !important;
   min-width: 100% !important;
   min-height: 100% !important;
-}
-
-/* Optimize fixed elements for smooth scrolling */
-.fixed {
-  transform: translateZ(0);
+  /* Only apply GPU acceleration to object-cover images that are in fixed/absolute positions */
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-/* Optimize sections for better scrolling performance */
-section {
-  transform: translateZ(0);
-  contain: layout style;
+/* Performance: Only apply GPU acceleration to elements that need it */
+/* Fixed navbar needs compositing for smooth scroll */
+.fixed {
+  /* Only apply transform to fixed elements that animate (e.g., navbar) */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-/* Optimize navbar for smooth animations */
+/* Performance: Use CSS containment for sections - reduces layout recalculation */
+section {
+  /* Removed transform: translateZ(0) - too many compositing layers */
+  contain: layout style;
+  /* Add content-visibility for offscreen sections to reduce rendering cost */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px; /* Approximate section height */
+}
+
+/* Performance: Navbar needs GPU acceleration for smooth hide/show */
 nav {
   transform: translateZ(0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  will-change: transform; /* Hint that navbar transforms frequently */
 }
 
-/* Optimize background containers */
+/* Performance: Optimize background video container */
 .absolute.inset-0,
 .fixed.inset-0 {
-  transform: translateZ(0);
+  /* Only apply if element contains video or animated content */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-/* Optimize transitions for better performance */
-* {
+/* Performance: Only animate transform and opacity for GPU acceleration */
+/* Avoid animating properties that trigger layout (width, height, top, left, margin, padding) */
+/* Transition optimizations - prefer transform/opacity */
+a, button {
+  transition-property: color, opacity, transform;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-out;
+}
+
+/* Remove global transition: all - too expensive */
+
+/* Performance: Remove unnecessary GPU acceleration from all section children */
+/* Only apply to elements that actually animate */
+
+/* Performance: Use optimizeSpeed for better scroll performance */
+/* optimizeLegibility is expensive and can cause scroll jank */
+body {
+  text-rendering: optimizeSpeed; /* Changed from optimizeLegibility for better performance */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Reduce repaint during scroll - optimize children */
-section > div {
-  transform: translateZ(0);
-}
-
-/* Reduce repaints - optimize text rendering */
-body {
-  text-rendering: optimizeLegibility;
 }
 
 /* Hide scrollbar utility */

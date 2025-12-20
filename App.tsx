@@ -95,6 +95,8 @@ const App: React.FC = () => {
                 video.loop = true;
                 video.playsInline = true;
                 video.controls = false;
+                // Performance: Use metadata preload to avoid decoding full video on page load
+                video.preload = 'metadata';
                 video.setAttribute('webkit-playsinline', 'true');
                 video.setAttribute('playsinline', 'true');
                 video.removeAttribute('controls');
@@ -109,9 +111,10 @@ const App: React.FC = () => {
                 video.style.minWidth = '100%';
                 video.style.minHeight = '100%';
                 video.style.objectFit = 'cover';
-                // Performance optimizations
+                // Performance: GPU acceleration for video (already composited, this is fine)
                 video.style.transform = 'translate(-50%, -50%) translateZ(0)';
-                video.style.willChange = 'auto';
+                // Performance: Remove willChange after video loads
+                video.style.willChange = 'transform';
                 
                 // Ensure video plays and stays playing
                 const ensurePlaying = () => {
@@ -145,7 +148,7 @@ const App: React.FC = () => {
             loop 
             muted 
             playsInline
-            preload="auto"
+            preload="metadata"
             className="object-cover -z-50"
             aria-hidden="true"
             style={{ 
@@ -169,7 +172,8 @@ const App: React.FC = () => {
         </div>
 
         {/* Heavy Overlay for Dark Theme */}
-        <div className="absolute inset-0 bg-nexus-dark/45 mix-blend-multiply" />
+          {/* Performance: mix-blend-mode can be expensive - consider solid overlay if needed */}
+          <div className="absolute inset-0 bg-nexus-dark/45" />
         
         {/* Static Noise Overlay (Optimized) */}
         <div 

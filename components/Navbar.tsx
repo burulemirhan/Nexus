@@ -23,25 +23,29 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, setIsMenuOpen, darkMode = f
     let rafId: number | null = null;
     let ticking = false;
 
+    // Performance: Optimized scroll handler - minimize work in scroll callback
+    // Already throttled with requestAnimationFrame - good
     const handleScroll = () => {
       if (!ticking) {
+        ticking = true;
         rafId = requestAnimationFrame(() => {
-      const currentScrollY = window.scrollY;
-      
-      if (isMenuOpen || currentScrollY < 10) {
-        setIsVisible(true);
-        lastScrollY.current = currentScrollY;
+          // Performance: Use window.scrollY once, cache result
+          const currentScrollY = window.scrollY;
+          
+          if (isMenuOpen || currentScrollY < 10) {
+            setIsVisible(true);
+            lastScrollY.current = currentScrollY;
             ticking = false;
-        return;
-      }
+            return;
+          }
 
-      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
-        setIsVisible(false);
-      } else if (currentScrollY < lastScrollY.current) {
-        setIsVisible(true);
-      }
-      
-      lastScrollY.current = currentScrollY;
+          // Performance: Batch state updates - only update if changed
+          const shouldBeVisible = currentScrollY < lastScrollY.current || currentScrollY <= 50;
+          if (shouldBeVisible !== isVisible) {
+            setIsVisible(shouldBeVisible);
+          }
+          
+          lastScrollY.current = currentScrollY;
           ticking = false;
         });
       }
@@ -143,7 +147,8 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, setIsMenuOpen, darkMode = f
         </div>
 
         {/* Desktop Menu */}
-        <div className={`hidden md:flex items-center gap-7 px-7 py-2 ${darkMode ? 'bg-white/80 backdrop-blur-sm border border-black/15' : 'bg-black/18 backdrop-blur-sm border border-white/15'} rounded-lg text-[11px] md:text-xs font-display font-bold tracking-widest uppercase ${darkMode ? 'text-black' : 'text-white'} shadow-lg`}>
+        {/* Performance: Removed backdrop-blur-sm - expensive on scroll. Using solid background instead */}
+        <div className={`hidden md:flex items-center gap-7 px-7 py-2 ${darkMode ? 'bg-white/90 border border-black/15' : 'bg-black/30 border border-white/15'} rounded-lg text-[11px] md:text-xs font-display font-bold tracking-widest uppercase ${darkMode ? 'text-black' : 'text-white'} shadow-lg`}>
           <a href="#vizyon" className={darkMode ? "text-black/70 hover:text-black transition-colors" : "text-white/70 hover:text-white transition-colors"}>{t('nav.vision')}</a>
           <a href="#technology" className={darkMode ? "text-black/70 hover:text-black transition-colors" : "text-white/70 hover:text-white transition-colors"}>{t('nav.technology')}</a>
           <a href="#engineering" className={darkMode ? "text-black/70 hover:text-black transition-colors" : "text-white/70 hover:text-white transition-colors"}>{t('nav.articles')}</a>

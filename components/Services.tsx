@@ -40,7 +40,7 @@ const Services: React.FC = () => {
   }, [t, language, location.pathname]);
 
   return (
-    <section id="services" className="min-h-screen flex items-center py-16 relative bg-nexus-dark/50 backdrop-blur-sm">
+    <section id="services" className="min-h-screen flex items-center py-16 relative bg-nexus-dark/60">
       {/* Gradient transition from black (Kritik Altyapı) into Hizmetler background */}
       <div className="pointer-events-none absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black to-nexus-dark/50" />
       <div className="w-full px-6 md:px-12 relative z-10 flex flex-col justify-center min-h-full">
