@@ -63,7 +63,7 @@ const Technology: React.FC = () => {
   ], [t]);
 
   return (
-    <section id="technology" className="flex flex-col justify-center py-12 md:py-16 relative bg-nexus-dark overflow-hidden">
+    <section id="technology" className="flex flex-col justify-center py-12 md:py-16 pb-20 md:pb-24 relative bg-nexus-dark overflow-visible">
       {/* Background Subtle Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-nexus-dark to-black" />
       
@@ -160,10 +160,10 @@ const Technology: React.FC = () => {
                </div>
 
                {/* Desktop Layout: Corner boxes with centered animation */}
-               <div className="hidden md:flex relative w-full items-start justify-center pt-4">
+               <div className="hidden md:flex relative w-full items-start justify-center pt-4 min-h-[600px] pb-8">
                  {/* Top Left */}
                  <div className="absolute top-4 left-0 w-[40%] max-w-[480px]">
-                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20">
+                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
                      <div className="flex items-center gap-3">
                        <span className="text-white/40 text-base font-mono" style={{ fontFamily: 'Barlow', fontSize: '16px' }}>
                          01
@@ -181,7 +181,7 @@ const Technology: React.FC = () => {
 
                  {/* Top Right */}
                  <div className="absolute top-4 right-0 w-[40%] max-w-[480px]">
-                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20">
+                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
                      <div className="flex items-center gap-3">
                        <span className="text-white/40 text-base font-mono" style={{ fontFamily: 'Barlow', fontSize: '16px' }}>
                          02
@@ -199,7 +199,7 @@ const Technology: React.FC = () => {
 
                  {/* Bottom Left */}
                  <div className="absolute top-[240px] left-0 w-[40%] max-w-[480px]">
-                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20">
+                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
                      <div className="flex items-center gap-3">
                        <span className="text-white/40 text-base font-mono" style={{ fontFamily: 'Barlow', fontSize: '16px' }}>
                          03
@@ -216,7 +216,7 @@ const Technology: React.FC = () => {
 
                  {/* Bottom Right */}
                  <div className="absolute top-[240px] right-0 w-[40%] max-w-[480px]">
-                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20">
+                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
                      <div className="flex items-center gap-3">
                        <span className="text-white/40 text-base font-mono" style={{ fontFamily: 'Barlow', fontSize: '16px' }}>
                          04
