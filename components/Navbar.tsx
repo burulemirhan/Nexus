@@ -197,9 +197,9 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, setIsMenuOpen, darkMode = f
         </button>
       </div>
     </nav>
-    
+
     {/* Mobile Menu - Full Screen Popup - Outside nav to cover entire screen */}
-    {isMenuOpen && (
+      {isMenuOpen && (
       <div 
         className={`md:hidden fixed ${darkMode ? 'bg-white' : 'bg-nexus-dark'} z-[9999] flex flex-col`}
         style={{ 
@@ -223,8 +223,8 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, setIsMenuOpen, darkMode = f
             aria-label="Close menu"
             style={{ minHeight: '44px', minWidth: '44px' }}
           >
-            <X className="w-7 h-7" />
-          </button>
+             <X className="w-7 h-7" />
+           </button>
         </div>
 
         {/* Menu Items - Centered */}
@@ -277,51 +277,51 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, setIsMenuOpen, darkMode = f
           >
             {t('nav.contact')}
           </a>
-          
+           
           {/* Mobile Language Switcher */}
           <div className={`mt-8 pt-8 border-t ${darkMode ? 'border-black/10' : 'border-white/10'} w-full flex flex-col items-center`} ref={mobileLangRef}>
-            <button
-              onClick={() => setIsLangOpen((o) => !o)}
+             <button
+               onClick={() => setIsLangOpen((o) => !o)}
               className={`flex items-center justify-center gap-2 px-4 py-3 text-xs font-display font-bold tracking-widest uppercase ${darkMode ? 'text-black/70 hover:text-black active:text-black' : 'text-white/70 hover:text-white active:text-white'} transition-colors touch-manipulation`}
               style={{ minHeight: '44px' }}
-            >
-              {language.toUpperCase()}
-              <ChevronDown className={`w-4 h-4 transition-transform ${isLangOpen ? 'rotate-180' : ''} ${darkMode ? 'text-black/70' : 'text-white/70'}`} />
-            </button>
-            {isLangOpen && (
+             >
+               {language.toUpperCase()}
+               <ChevronDown className={`w-4 h-4 transition-transform ${isLangOpen ? 'rotate-180' : ''} ${darkMode ? 'text-black/70' : 'text-white/70'}`} />
+             </button>
+             {isLangOpen && (
               <div className={`mt-3 ${darkMode ? 'bg-white/95 backdrop-blur-md border border-black/20' : 'bg-black/85 backdrop-blur-md border border-white/10'} rounded-md overflow-hidden`}>
-                <button
-                  onClick={() => {
-                    handleLanguageChange('tr');
-                    setIsMenuOpen(false);
-                  }}
+                 <button
+                   onClick={() => {
+                     handleLanguageChange('tr');
+                     setIsMenuOpen(false);
+                   }}
                   className={`w-full px-4 py-3 text-left text-xs font-display font-bold tracking-widest uppercase transition-colors touch-manipulation ${
-                    language === 'tr'
-                     ? darkMode ? 'text-black bg-black/10' : 'text-white bg-white/10'
-                      : darkMode ? 'text-black/70 hover:text-black hover:bg-black/5' : 'text-white/70 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  TR
-                </button>
-                <button
-                  onClick={() => {
-                    handleLanguageChange('en');
-                    setIsMenuOpen(false);
-                  }}
+                     language === 'tr'
+                      ? darkMode ? 'text-black bg-black/10' : 'text-white bg-white/10'
+                       : darkMode ? 'text-black/70 hover:text-black hover:bg-black/5' : 'text-white/70 hover:text-white hover:bg-white/5'
+                   }`}
+                 >
+                   TR
+                 </button>
+                 <button
+                   onClick={() => {
+                     handleLanguageChange('en');
+                     setIsMenuOpen(false);
+                   }}
                   className={`w-full px-4 py-3 text-left text-xs font-display font-bold tracking-widest uppercase transition-colors touch-manipulation ${
-                    language === 'en'
-                     ? darkMode ? 'text-black bg-black/10' : 'text-white bg-white/10'
-                      : darkMode ? 'text-black/70 hover:text-black hover:bg-black/5' : 'text-white/70 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  EN
-                </button>
-              </div>
-            )}
+                     language === 'en'
+                      ? darkMode ? 'text-black bg-black/10' : 'text-white bg-white/10'
+                       : darkMode ? 'text-black/70 hover:text-black hover:bg-black/5' : 'text-white/70 hover:text-white hover:bg-white/5'
+                   }`}
+                 >
+                   EN
+                 </button>
+               </div>
+             )}
           </div>
+           </div>
         </div>
-      </div>
-    )}
+      )}
     </>
   );
 };

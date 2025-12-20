@@ -11,7 +11,7 @@ const Hero: React.FC = () => {
       aria-labelledby="hero-title"
     >
       
-      <div className="absolute bottom-20 md:bottom-24 left-4 md:left-12 z-20 flex flex-col items-start gap-4 md:gap-6 pr-4 md:pr-0 max-w-[calc(100vw-2rem)] md:max-w-none">
+      <div className="absolute bottom-24 md:bottom-24 left-4 md:left-12 z-20 flex flex-col items-start gap-4 md:gap-6 pr-4 md:pr-0 max-w-[calc(100vw-2rem)] md:max-w-none">
         
         <h1 
           id="hero-title"
