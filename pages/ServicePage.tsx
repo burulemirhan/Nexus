@@ -127,16 +127,16 @@ const ServicePage: React.FC<ServicePageProps> = ({
     });
 
     const lenis = new Lenis({
-      duration: 1.0, // Optimized for smooth performance
+      duration: 0.9, // Faster for mobile responsiveness
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 0.7, // Optimized for smoother scrolling
-      touchMultiplier: 1.2, // Optimized for better touch performance
+      touchMultiplier: 1.8, // Faster touch scrolling for mobile
       infinite: false,
       syncTouch: true, // Better touch sync
-      syncTouchLerp: 0.075, // Smooth touch lerp
+      syncTouchLerp: 0.1, // Faster touch lerp for responsiveness
     });
 
     lenisRef.current = lenis;
