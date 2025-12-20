@@ -160,7 +160,7 @@ const Technology: React.FC = () => {
                </div>
 
                {/* Desktop Layout: Corner boxes with centered animation */}
-               <div className="hidden md:flex relative w-full items-start justify-center pt-4 min-h-[600px] pb-4">
+               <div className="hidden md:flex relative w-full items-start justify-center pt-4 min-h-[580px] pb-2">
                  {/* Top Left */}
                  <div className="absolute top-4 left-0 w-[40%] max-w-[480px]">
                    <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
