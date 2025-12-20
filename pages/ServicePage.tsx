@@ -516,14 +516,14 @@ const ServicePage: React.FC<ServicePageProps> = ({
               {t('services.button')}
             </h3>
             <div className="space-y-3 text-sm md:text-base font-mono">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                <span className="text-white/40 sm:mr-2 flex-shrink-0">E-mail:</span>
-                <a href="mailto:emirhanburul@nexusbiotech.org" className="text-white hover:underline break-all sm:break-normal">
+              <div className="flex items-start gap-2">
+                <span className="text-white/40 whitespace-nowrap">E-mail:</span>
+                <a href="mailto:emirhanburul@nexusbiotech.org" className="text-white hover:underline break-all">
                   emirhanburul@nexusbiotech.org
                 </a>
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                <span className="text-white/40 sm:mr-2 flex-shrink-0">Phone:</span>
+              <div className="flex items-center gap-2">
+                <span className="text-white/40 whitespace-nowrap">Phone:</span>
                 <a href="tel:+905374957304" className="text-white hover:underline">
                   +90 537 495 73 04
                 </a>
