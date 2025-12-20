@@ -107,7 +107,7 @@ const Technology: React.FC = () => {
             {/* Left: Modules List */}
             <div className="space-y-6">
               <div className="font-mono text-xs md:text-sm text-white/40 uppercase tracking-widest mb-4" style={{ fontSize: '14px' }}>
-                Modules:
+                {t('tech.intelligence.modules')}
               </div>
               {aiModules.map((module, index) => (
                 <div key={index} className="flex items-center gap-4">
