@@ -156,29 +156,36 @@ const IntelligenceAnimation: React.FC = () => {
           opacity: 0.9,
         });
 
-        // Flow from symbol to E (sensor/data flow) - delayed slightly
-        setTimeout(() => {
-          dataFlowsRef.current.push({
-            id: Date.now() + 100,
-            fromX: symbol.x,
-            fromY: symbol.y,
-            toX: centerX,
-            toY: centerY,
-            progress: 0,
-            speed: speed,
-            opacity: 0.7,
-          });
-        }, 300);
+        // Flow from symbol to E (sensor/data flow) - start slightly delayed
+        dataFlowsRef.current.push({
+          id: Date.now() + 1,
+          fromX: symbol.x,
+          fromY: symbol.y,
+          toX: centerX,
+          toY: centerY,
+          progress: -0.2, // Start slightly behind (negative progress)
+          speed: speed,
+          opacity: 0.7,
+        });
 
         lastFlowTimeRef.current = currentTime;
       }
 
       // Update and draw data flows
       dataFlowsRef.current = dataFlowsRef.current.filter((flow) => {
-        flow.progress += flow.speed;
+        if (flow.progress < 0) {
+          flow.progress += flow.speed; // Only advance if started
+        } else {
+          flow.progress += flow.speed;
+        }
 
-        if (flow.progress >= 1) {
+        if (flow.progress >= 1 || flow.progress < -0.3) {
           return false;
+        }
+
+        // Skip drawing if not started yet
+        if (flow.progress < 0) {
+          return true;
         }
 
         const x = flow.fromX + (flow.toX - flow.fromX) * flow.progress;
