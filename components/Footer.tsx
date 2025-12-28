@@ -1,8 +1,11 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Footer: React.FC = () => {
-  useLanguage(); // keep hook usage consistent even if we don't show text now
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+  const location = useLocation();
   
   return (
     <footer
@@ -12,7 +15,18 @@ const Footer: React.FC = () => {
       aria-label="Site footer"
     >
       <div className="w-full px-4 md:px-12 flex flex-col md:flex-row items-center justify-between gap-4 py-4">
-        <nav className="flex gap-6 text-sm md:text-sm text-white/60 font-display uppercase tracking-widest" aria-label="Social media links" style={{ fontSize: '16px' }}>
+        <nav className="flex flex-wrap gap-6 text-sm md:text-sm text-white/60 font-display uppercase tracking-widest justify-center md:justify-start" aria-label="Footer navigation" style={{ fontSize: '16px' }}>
+          <button
+            onClick={() => {
+              const basePath = location.pathname.startsWith('/en') ? '/en/team' : '/ekip';
+              navigate(basePath);
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+            }}
+            className="hover:text-white active:text-white transition-colors touch-manipulation"
+            style={{ minHeight: '44px', display: 'flex', alignItems: 'center' }}
+          >
+            {t('nav.team')}
+          </button>
           <a 
             href="#" 
             className="hover:text-white active:text-white transition-colors touch-manipulation"

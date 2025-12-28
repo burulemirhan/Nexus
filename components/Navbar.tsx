@@ -106,6 +106,8 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, setIsMenuOpen, darkMode = f
       '/en/defense-industry-projects': { tr: '/savunma-sanayi-projeleri', en: '/en/defense-industry-projects' },
       '/danışmanlık-ve-proje-yönetimi': { tr: '/danışmanlık-ve-proje-yönetimi', en: '/en/consulting-and-project-management' },
       '/en/consulting-and-project-management': { tr: '/danışmanlık-ve-proje-yönetimi', en: '/en/consulting-and-project-management' },
+      '/ekip': { tr: '/ekip', en: '/en/team' },
+      '/en/team': { tr: '/ekip', en: '/en/team' },
     };
     
     // Use decoded pathname so TR routes with special chars match correctly
@@ -158,6 +160,16 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, setIsMenuOpen, darkMode = f
           <a href="#engineering" className={darkMode ? "text-black/70 hover:text-black transition-colors" : "text-white/70 hover:text-white transition-colors"}>{t('nav.articles')}</a>
           <a href="#defense" className={darkMode ? "text-black/70 hover:text-black transition-colors" : "text-white/70 hover:text-white transition-colors"}>{t('nav.defense')}</a>
           <a href="#services" className={darkMode ? "text-black/70 hover:text-black transition-colors" : "text-white/70 hover:text-white transition-colors"}>{t('nav.services')}</a>
+          <button
+            onClick={() => {
+              const basePath = location.pathname.startsWith('/en') ? '/en/team' : '/ekip';
+              navigate(basePath);
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+            }}
+            className={darkMode ? "text-black/70 hover:text-black transition-colors" : "text-white/70 hover:text-white transition-colors"}
+          >
+            {t('nav.team')}
+          </button>
           <a href="#contact" className={darkMode ? "text-black/70 hover:text-black transition-colors" : "text-white/70 hover:text-white transition-colors"}>{t('nav.contact')}</a>
           
           {/* Language Switcher */}
@@ -278,6 +290,18 @@ const Navbar: React.FC<NavbarProps> = ({ isMenuOpen, setIsMenuOpen, darkMode = f
           >
             {t('nav.services')}
           </a>
+          <button
+            onClick={() => {
+              const basePath = location.pathname.startsWith('/en') ? '/en/team' : '/ekip';
+              navigate(basePath);
+              setIsMenuOpen(false);
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+            }}
+            className={`text-xs font-display font-bold tracking-widest uppercase ${darkMode ? "text-black/70 hover:text-black active:text-black" : "text-white/70 hover:text-white active:text-white"} transition-colors touch-manipulation`}
+            style={{ minHeight: '44px', display: 'flex', alignItems: 'center' }}
+          >
+            {t('nav.team')}
+          </button>
           <a 
             href="#contact" 
             onClick={() => setIsMenuOpen(false)} 

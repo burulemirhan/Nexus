@@ -7,6 +7,7 @@ import EngineeringSolutions from './pages/EngineeringSolutions';
 import TurnkeyProjects from './pages/TurnkeyProjects';
 import DefenseProjects from './pages/DefenseProjects';
 import ConsultingProjectManagement from './pages/ConsultingProjectManagement';
+import Team from './pages/Team';
 import ScrollToTop from './components/ScrollToTop';
 
 const rootElement = document.getElementById('root');
@@ -72,6 +73,16 @@ root.render(
         <Route path="/en/consulting-and-project-management" element={
           <LanguageProvider defaultLanguage="en">
             <ConsultingProjectManagement />
+          </LanguageProvider>
+        } />
+        <Route path="/ekip" element={
+          <LanguageProvider defaultLanguage="tr">
+            <Team />
+          </LanguageProvider>
+        } />
+        <Route path="/en/team" element={
+          <LanguageProvider defaultLanguage="en">
+            <Team />
           </LanguageProvider>
         } />
       </Routes>

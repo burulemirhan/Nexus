@@ -54,12 +54,14 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'nav.articles': 'MAKALELER',
       'nav.defense': 'SAVUNMA',
       'nav.services': 'HİZMETLER',
+      'nav.team': 'EKİP',
       'nav.contact': 'İLETİŞİM',
       'nav.vision.mobile': 'Vizyon',
       'nav.technology.mobile': 'Teknoloji',
       'nav.articles.mobile': 'Makaleler',
       'nav.defense.mobile': 'Savunma',
       'nav.services.mobile': 'Hizmetler',
+      'nav.team.mobile': 'Ekip',
       'nav.contact.mobile': 'İletişim',
       
       // Hero
@@ -228,6 +230,13 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'service4.process4.title': 'Teslim ve Değerlendirme',
       'service4.process4.desc': 'Proje tamamlama, sonuçların değerlendirilmesi ve süreç iyileştirme önerileri.',
       
+      // Team
+      'team.title': 'EKİP',
+      'team.subtitle': 'Nexus Biotechnologies ekibini tanıyın.',
+      'team.emirhan.name': 'Emirhan Burul',
+      'team.emirhan.description1': 'Emirhan Burul, kontrollü ortam tarımını ölçeklenebilir ve güvenilir altyapıya dönüştürmeye odaklanan bir sistem mühendisi ve biyoteknoloji eğitimli bir yapımcıdır. Münih Teknik Üniversitesi\'nden biyoteknoloji geçmişi ve veri odaklı üretim sistemlerini tasarlama ve işletme konusundaki pratik deneyimiyle, biyoloji, donanım ve yazılımı bir araya getiriyor—algılama, otomasyon, iklim stratejisi ve operasyonel iş akışlarını tek bir tutarlı üründe birleştiriyor.',
+      'team.emirhan.description2': 'Nexus Biotechnologies\'te Emirhan, teknik vizyonu ilk prensiplerden yönetiyor: enerji ve operasyonel karmaşıklığı azaltırken tutarlılığı ve birim ekonomisini iyileştiren pratik sistemler inşa ediyor. Startup zihniyetiyle çalışıyor—hızlı üretim, her şeyi ölçme, durmaksızın yineleme—ve iddialı fikirleri gerçek müşterilerin her gün çalıştırabileceği dağıtılabilir çözümlere dönüştürmeye takıntılı.',
+      
       // Footer
       'footer.tagline': 'ADVANCED AGRICULTURAL ENGINEERING AND BIOTECHNOLOGICAL DESIGN',
       'footer.copyright': '© 2026 NEXUS BIOTECHNOLOGIES. ISTANBUL.',
@@ -239,12 +248,14 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'nav.articles': 'ARTICLES',
       'nav.defense': 'DEFENSE',
       'nav.services': 'SERVICES',
+      'nav.team': 'TEAM',
       'nav.contact': 'CONTACT',
       'nav.vision.mobile': 'Vision',
       'nav.technology.mobile': 'Technology',
       'nav.articles.mobile': 'Articles',
       'nav.defense.mobile': 'Defense',
       'nav.services.mobile': 'Services',
+      'nav.team.mobile': 'Team',
       'nav.contact.mobile': 'Contact',
       
       // Hero
@@ -409,6 +420,13 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'service4.process3.desc': 'Continuous monitoring of project progress, performance evaluation and necessary adjustments.',
       'service4.process4.title': 'Delivery and Evaluation',
       'service4.process4.desc': 'Project completion, evaluation of results and process improvement recommendations.',
+      
+      // Team
+      'team.title': 'TEAM',
+      'team.subtitle': 'Meet the Nexus Biotechnologies team.',
+      'team.emirhan.name': 'Emirhan Burul',
+      'team.emirhan.description1': 'Emirhan Burul is a systems engineer and biotechnology-trained builder focused on turning controlled-environment agriculture into scalable, reliable infrastructure. With a biotech background from Technical University of Munich and hands-on experience designing and operating data-driven production systems, he bridges biology, hardware, and software—bringing together sensing, automation, climate strategy, and operational workflows into one coherent product.',
+      'team.emirhan.description2': 'At Nexus Biotechnologies, Emirhan leads the technical vision from first principles: building practical systems that reduce energy and operational complexity while improving consistency and unit economics. He operates with a startup mindset—ship fast, measure everything, iterate relentlessly—and is obsessed with turning ambitious ideas into deployable solutions that real customers can run every day.',
       
       // Footer
       'footer.tagline': 'ADVANCED AGRICULTURAL ENGINEERING AND BIOTECHNOLOGICAL DESIGN',
