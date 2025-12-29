@@ -40,8 +40,12 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     
     <!-- Theme Color -->
-    <meta name="theme-color" content="#008B8B" />
-    <meta name="msapplication-TileColor" content="#008B8B" />
+    <!-- Fallback for browsers that don't support media queries -->
+    <meta name="theme-color" content="#2D7A7A" />
+    <!-- Media query variants for better browser support -->
+    <meta name="theme-color" content="#2D7A7A" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#2D7A7A" media="(prefers-color-scheme: dark)" />
+    <meta name="msapplication-TileColor" content="#2D7A7A" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     
     <!-- Preconnect for performance -->
