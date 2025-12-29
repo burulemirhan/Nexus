@@ -17,6 +17,40 @@ if (!rootElement) {
 
 const root = ReactDOM.createRoot(rootElement);
 
+// Theme-color verification (development only)
+if (import.meta.env.DEV) {
+  const themeColorMetas = Array.from(document.querySelectorAll('meta[name="theme-color"]'));
+  const userAgent = navigator.userAgent;
+  const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+  const isChrome = userAgent.includes('Chrome');
+  const isFirefox = userAgent.includes('Firefox');
+  const browser = isChrome ? 'Chrome' : 
+                  isSafari ? 'Safari' : 
+                  isFirefox ? 'Firefox' : 'Unknown';
+  
+  const safariVersion = isSafari ? (userAgent.match(/Version\/(\d+)/)?.[1] || 'unknown') : null;
+  const safariNote = isSafari && safariVersion && parseInt(safariVersion) >= 15 
+    ? 'Safari 15+ supports theme-color. Ensure tab bar is in "Compact" layout (Preferences → Tabs).'
+    : isSafari 
+    ? `Safari ${safariVersion} - theme-color requires Safari 15+`
+    : '';
+  
+  console.log('[theme-color] Verification:', {
+    allThemeColorTags: themeColorMetas.map(m => m.outerHTML),
+    count: themeColorMetas.length,
+    userAgent,
+    browser,
+    safariVersion: safariVersion || 'N/A',
+    notes: [
+      safariNote,
+      'Desktop Safari (15+): Works in Compact tab layout',
+      'Mobile Safari: Works on iOS',
+      'Android Chrome: Works on mobile',
+      'Desktop Chrome: Limited support (mobile only)'
+    ].filter(Boolean)
+  });
+}
+
 // Get base path from environment or use default
 const basePath = import.meta.env.BASE_URL || '/';
 
