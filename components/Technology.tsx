@@ -160,94 +160,163 @@ const Technology: React.FC = () => {
                </div>
 
                {/* Desktop Layout: Corner boxes with centered animation */}
-               <div className="hidden md:flex relative w-full items-start justify-center pt-4 min-h-[580px] pb-2">
+               <div className="hidden md:flex relative w-full items-start justify-center pt-4 min-h-[550px] pb-2">
                  {/* Top Left */}
-                 <div className="absolute top-4 left-0 w-[40%] max-w-[480px]">
-                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
-                     <div className="flex items-center gap-3">
-                       <span className="text-white/40 text-base font-mono" style={{ fontFamily: 'Barlow', fontSize: '16px' }}>
+                 <div className="absolute top-4 left-0 w-[38%] max-w-[400px]">
+                   <div className="flex flex-col space-y-2.5 p-4 md:p-5 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
+                     <div className="flex items-center gap-2.5">
+                       <span className="text-white/40 text-sm font-mono" style={{ fontFamily: 'Barlow', fontSize: '14px' }}>
                          01
                        </span>
-                       <h3 className="font-tesla font-bold text-lg md:text-xl text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.125rem, 3vw, 1.5rem)' }}>
+                       <h3 className="font-tesla font-bold text-base md:text-lg text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1rem, 2.2vw, 1.125rem)' }}>
                          {aiLayers[0].title}
                        </h3>
                      </div>
                      <div className="h-[1px] w-full bg-white/10" />
-                     <p className="text-white/60 text-base md:text-lg font-light leading-relaxed" style={{ fontFamily: 'Barlow', fontSize: '17px' }}>
+                     <p className="text-white/60 text-sm md:text-base font-light leading-relaxed" style={{ fontFamily: 'Barlow', fontSize: 'clamp(0.875rem, 1.8vw, 1rem)' }}>
                        {aiLayers[0].description}
                      </p>
                    </div>
                  </div>
 
                  {/* Top Right */}
-                 <div className="absolute top-4 right-0 w-[40%] max-w-[480px]">
-                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
-                     <div className="flex items-center gap-3">
-                       <span className="text-white/40 text-base font-mono" style={{ fontFamily: 'Barlow', fontSize: '16px' }}>
+                 <div className="absolute top-4 right-0 w-[38%] max-w-[400px]">
+                   <div className="flex flex-col space-y-2.5 p-4 md:p-5 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
+                     <div className="flex items-center gap-2.5">
+                       <span className="text-white/40 text-sm font-mono" style={{ fontFamily: 'Barlow', fontSize: '14px' }}>
                          02
                        </span>
-                       <h3 className="font-tesla font-bold text-lg md:text-xl text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.125rem, 3vw, 1.5rem)' }}>
+                       <h3 className="font-tesla font-bold text-base md:text-lg text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1rem, 2.2vw, 1.125rem)' }}>
                          {aiLayers[1].title}
                        </h3>
                      </div>
                      <div className="h-[1px] w-full bg-white/10" />
-                     <p className="text-white/60 text-base md:text-lg font-light leading-relaxed" style={{ fontFamily: 'Barlow', fontSize: '17px' }}>
+                     <p className="text-white/60 text-sm md:text-base font-light leading-relaxed" style={{ fontFamily: 'Barlow', fontSize: 'clamp(0.875rem, 1.8vw, 1rem)' }}>
                        {aiLayers[1].description}
                      </p>
                    </div>
                  </div>
 
                  {/* Bottom Left */}
-                 <div className="absolute top-[240px] left-0 w-[40%] max-w-[480px]">
-                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
-                     <div className="flex items-center gap-3">
-                       <span className="text-white/40 text-base font-mono" style={{ fontFamily: 'Barlow', fontSize: '16px' }}>
+                 <div className="absolute top-[220px] left-0 w-[38%] max-w-[400px]">
+                   <div className="flex flex-col space-y-2.5 p-4 md:p-5 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
+                     <div className="flex items-center gap-2.5">
+                       <span className="text-white/40 text-sm font-mono" style={{ fontFamily: 'Barlow', fontSize: '14px' }}>
                          03
                        </span>
-                       <h3 className="font-tesla font-bold text-lg md:text-xl text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.125rem, 3vw, 1.5rem)' }}>
+                       <h3 className="font-tesla font-bold text-base md:text-lg text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1rem, 2.2vw, 1.125rem)' }}>
                          {aiLayers[2].title}
                        </h3>
                      </div>
-                     <p className="text-white/60 text-base md:text-lg font-light leading-relaxed" style={{ fontFamily: 'Barlow', fontSize: '17px' }}>
+                     <p className="text-white/60 text-sm md:text-base font-light leading-relaxed" style={{ fontFamily: 'Barlow', fontSize: 'clamp(0.875rem, 1.8vw, 1rem)' }}>
                        {aiLayers[2].description}
                      </p>
                    </div>
                  </div>
 
                  {/* Bottom Right */}
-                 <div className="absolute top-[240px] right-0 w-[40%] max-w-[480px]">
-                   <div className="flex flex-col space-y-3 p-5 md:p-6 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
-                     <div className="flex items-center gap-3">
-                       <span className="text-white/40 text-base font-mono" style={{ fontFamily: 'Barlow', fontSize: '16px' }}>
+                 <div className="absolute top-[220px] right-0 w-[38%] max-w-[400px]">
+                   <div className="flex flex-col space-y-2.5 p-4 md:p-5 border border-white/10 hover:border-white/20 transition-[border-color] duration-300 bg-black/20 overflow-visible">
+                     <div className="flex items-center gap-2.5">
+                       <span className="text-white/40 text-sm font-mono" style={{ fontFamily: 'Barlow', fontSize: '14px' }}>
                          04
                        </span>
-                       <h3 className="font-tesla font-bold text-lg md:text-xl text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.125rem, 3vw, 1.5rem)' }}>
+                       <h3 className="font-tesla font-bold text-base md:text-lg text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1rem, 2.2vw, 1.125rem)' }}>
                          {aiLayers[3].title}
                        </h3>
                      </div>
-                     <p className="text-white/60 text-base md:text-lg font-light leading-relaxed" style={{ fontFamily: 'Barlow', fontSize: '17px' }}>
+                     <p className="text-white/60 text-sm md:text-base font-light leading-relaxed" style={{ fontFamily: 'Barlow', fontSize: 'clamp(0.875rem, 1.8vw, 1rem)' }}>
                        {aiLayers[3].description}
                      </p>
                    </div>
                  </div>
 
                  {/* Center: Animation */}
-                 <div className="relative w-[300px] h-[300px] flex items-center justify-center bg-transparent rounded-sm overflow-hidden z-10">
+                 <div className="relative w-[280px] h-[280px] flex items-center justify-center bg-transparent rounded-sm overflow-hidden z-10">
                    <div className="absolute inset-0">
-                     <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-white/20 z-20" />
-                     <div className="absolute top-0 right-0 w-6 h-6 border-t border-r border-white/20 z-20" />
-                     <div className="absolute bottom-0 left-0 w-6 h-6 border-b border-l border-white/20 z-20" />
-                     <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-white/20 z-20" />
+                     <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-white/20 z-20" />
+                     <div className="absolute top-0 right-0 w-5 h-5 border-t border-r border-white/20 z-20" />
+                     <div className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-white/20 z-20" />
+                     <div className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-white/20 z-20" />
                    </div>
-                   <DataFlowAnimation className="w-full h-full" />
+                   <div className="w-full h-full overflow-hidden">
+                     <DataFlowAnimation className="w-full h-full scale-150" />
+                   </div>
                  </div>
                </div>
              </div>
            </div>
          ) : (
-           /* Hardware Tab: Grid of four components */
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-             {technologies.map((tech) => (
+           /* Hardware Tab: OASIS large box, then three smaller boxes in a row */
+           <div className="flex flex-col gap-6 md:gap-8">
+             {/* OASIS - Large Box */}
+             {(() => {
+               const oasis = technologies.find(t => t.id === 'oasis');
+               if (!oasis) return null;
+               return (
+                 <div className="group relative overflow-hidden flex flex-col bg-black/40 border border-white/10 hover:border-white/20 transition-all duration-300 rounded-sm">
+                   {/* Image */}
+                   <div className="relative w-full aspect-[21/6] md:aspect-[21/5] overflow-hidden bg-black/60">
+                     <img 
+                       src={`${BASE_URL}assets/images/${oasis.id}.avif`} 
+                       alt={`${oasis.name} - ${oasis.subtitle}`}
+                       loading="lazy"
+                       decoding="async"
+                       className="object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                       style={{
+                         width: '100%',
+                         height: '100%',
+                         minWidth: '100%',
+                         minHeight: '100%',
+                         objectFit: 'cover',
+                         transform: 'scale(1.15)',
+                         transformOrigin: 'center center'
+                       }}
+                     />
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                   </div>
+
+                   {/* Content */}
+                   <div className="flex-1 flex flex-col p-4 md:p-6 lg:p-8 space-y-3 md:space-y-4">
+                     <div className="space-y-2">
+                       <div className="flex items-center gap-2">
+                         <span className="w-2 h-2 rounded-full" style={{backgroundColor: oasis.accent}}></span>
+                         <span className="font-mono font-bold text-[10px] md:text-xs text-white/40 uppercase tracking-[0.2em]" style={{ fontFamily: 'Barlow', fontSize: 'clamp(0.625rem, 1.5vw, 0.75rem)' }}>
+                           {oasis.subtitle}
+                         </span>
+                       </div>
+                       <h3 className="font-tesla font-bold text-xl md:text-3xl lg:text-4xl text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.25rem, 3vw, 2.5rem)' }}>
+                         {oasis.name}
+                       </h3>
+                     </div>
+
+                     <div className="h-[1px] w-12 bg-white/10" />
+
+                     <p className="font-tech text-white/70 text-sm md:text-base lg:text-lg font-light leading-relaxed flex-1 whitespace-pre-line" style={{ fontFamily: 'Barlow', fontSize: 'clamp(0.875rem, 2vw, 1.125rem)' }}>
+                       {oasis.description}
+                     </p>
+
+                     <div className="pt-2">
+                       <span 
+                         className="inline-block py-1.5 md:py-2 px-2 md:px-3 border rounded font-mono text-[9px] md:text-xs text-white/80 uppercase tracking-widest break-words" 
+                         style={{ 
+                           color: oasis.accent, 
+                           borderColor: `${oasis.accent}40`,
+                           fontFamily: 'Barlow',
+                           fontSize: 'clamp(0.625rem, 1.5vw, 0.75rem)'
+                         }}
+                       >
+                         {oasis.details}
+                       </span>
+                     </div>
+                   </div>
+                 </div>
+               );
+             })()}
+
+             {/* AETHER, TERRA, ECODOME - Smaller boxes in a row */}
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+               {technologies.filter(tech => tech.id !== 'oasis').map((tech) => (
                <div
                  key={tech.id}
                  className="group relative overflow-hidden flex flex-col bg-black/40 border border-white/10 hover:border-white/20 transition-all duration-300 rounded-sm"
@@ -274,33 +343,33 @@ const Technology: React.FC = () => {
                  </div>
 
                  {/* Content */}
-                 <div className="flex-1 flex flex-col p-4 md:p-6 space-y-3 md:space-y-4">
-                   <div className="space-y-2">
+                   <div className="flex-1 flex flex-col p-4 md:p-5 space-y-2 md:space-y-3">
+                     <div className="space-y-1.5">
                      <div className="flex items-center gap-2">
                        <span className="w-2 h-2 rounded-full" style={{backgroundColor: tech.accent}}></span>
-                       <span className="font-mono font-bold text-[10px] text-white/40 uppercase tracking-[0.2em]" style={{ fontFamily: 'Barlow', fontSize: '11px' }}>
+                         <span className="font-mono font-bold text-[9px] text-white/40 uppercase tracking-[0.2em]" style={{ fontFamily: 'Barlow', fontSize: '10px' }}>
                          {tech.subtitle}
                        </span>
                      </div>
-                     <h3 className="font-tesla font-bold text-xl md:text-3xl text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.25rem, 3vw, 2rem)' }}>
+                       <h3 className="font-tesla font-bold text-lg md:text-xl text-white tracking-normal" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.125rem, 2.5vw, 1.5rem)' }}>
                        {tech.name}
                      </h3>
                    </div>
 
-                   <div className="h-[1px] w-12 bg-white/10" />
+                     <div className="h-[1px] w-8 bg-white/10" />
 
-                   <p className="font-tech text-white/70 text-xs md:text-base font-light leading-relaxed flex-1" style={{ fontFamily: 'Barlow', fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}>
+                     <p className="font-tech text-white/70 text-xs md:text-sm font-light leading-relaxed flex-1" style={{ fontFamily: 'Barlow', fontSize: 'clamp(0.75rem, 1.5vw, 0.875rem)' }}>
                      {tech.description}
                    </p>
 
                    <div className="pt-2">
                      <span 
-                       className="inline-block py-1.5 md:py-2 px-2 md:px-3 border rounded font-mono text-[9px] md:text-xs text-white/80 uppercase tracking-widest break-words" 
+                         className="inline-block py-1 md:py-1.5 px-2 border rounded font-mono text-[8px] md:text-[9px] text-white/80 uppercase tracking-widest break-words" 
                        style={{ 
                          color: tech.accent, 
                          borderColor: `${tech.accent}40`,
                          fontFamily: 'Barlow',
-                         fontSize: 'clamp(0.625rem, 1.5vw, 0.75rem)'
+                           fontSize: 'clamp(0.5rem, 1.2vw, 0.625rem)'
                        }}
                      >
                        {tech.details}
@@ -309,6 +378,7 @@ const Technology: React.FC = () => {
                  </div>
                </div>
              ))}
+             </div>
            </div>
          )}
 

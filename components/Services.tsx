@@ -1,13 +1,16 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+
+const BASE_URL = import.meta.env.BASE_URL || '/';
 
 const Services: React.FC = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const [isContactOpen, setIsContactOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   
   const services = useMemo(() => {
     const basePath = location.pathname.startsWith('/en') ? '/en' : '';
@@ -39,10 +42,86 @@ const Services: React.FC = () => {
     ];
   }, [t, language, location.pathname]);
 
+  // Setup video background
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Setup video properties
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.controls = false;
+    video.preload = 'metadata';
+    video.setAttribute('webkit-playsinline', 'true');
+    video.setAttribute('playsinline', 'true');
+    video.removeAttribute('controls');
+    video.style.pointerEvents = 'none';
+    video.style.outline = 'none';
+    video.style.position = 'absolute';
+    video.style.top = '50%';
+    video.style.left = '50%';
+    video.style.width = '100%';
+    video.style.height = '100%';
+    video.style.minWidth = '100%';
+    video.style.minHeight = '100%';
+    video.style.objectFit = 'cover';
+    video.style.transform = 'translate(-50%, -50%) translateZ(0)';
+
+    // Ensure video plays
+    const ensurePlaying = () => {
+      if (video.paused) {
+        video.play().catch(() => {});
+      }
+    };
+
+    const handleEnded = () => {
+      video.play().catch(() => {});
+    };
+
+    // Try to play immediately
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        const tryPlay = () => {
+          video.play().catch(() => {});
+          document.removeEventListener('touchstart', tryPlay);
+          document.removeEventListener('click', tryPlay);
+        };
+        document.addEventListener('touchstart', tryPlay, { once: true });
+        document.addEventListener('click', tryPlay, { once: true });
+      });
+    }
+
+    video.addEventListener('pause', ensurePlaying);
+    video.addEventListener('ended', handleEnded);
+
+    return () => {
+      video.removeEventListener('pause', ensurePlaying);
+      video.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
   return (
-    <section id="services" className="min-h-screen flex items-center py-16 relative bg-nexus-dark/60">
+    <section id="services" className="min-h-screen flex items-center py-16 relative bg-nexus-dark/60 overflow-hidden">
+      {/* Background Video with 30% opacity */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <video 
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="object-cover"
+          style={{ opacity: 0.3 }}
+          aria-hidden="true"
+        >
+          <source src={`${BASE_URL}assets/videos/bg.mp4`} type="video/mp4" />
+        </video>
+      </div>
+
       {/* Gradient transition from black (Kritik Altyapı) into Hizmetler background */}
-      <div className="pointer-events-none absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black to-nexus-dark/50" />
+      <div className="pointer-events-none absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black to-transparent z-[1]" />
       <div className="w-full px-6 md:px-12 relative z-10 flex flex-col justify-center min-h-full">
         
         <h2 className="font-tesla font-bold text-2xl md:text-5xl text-white uppercase mb-8 md:mb-10 tracking-tight break-words" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 4vw, 3rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word' }}>

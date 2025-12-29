@@ -230,32 +230,18 @@ const Team: React.FC = () => {
         {/* Hero Section */}
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
           <div className="w-full px-4 md:px-12 relative z-10 flex flex-col items-center justify-center min-h-full py-12 md:py-16">
-            <div className="max-w-4xl mx-auto w-full text-center px-2 md:px-0">
-              <h1 className="font-tesla font-bold text-3xl md:text-6xl text-white uppercase tracking-wide md:tracking-wider drop-shadow-2xl leading-[1.1] md:leading-[0.9] break-words hyphens-auto mb-6 md:mb-8" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.875rem, 4vw, 3.75rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word' }}>
-                {t('team.title')}
-              </h1>
-              <p className="text-white/80 text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto mb-12 md:mb-16" style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)' }}>
-                {t('team.subtitle')}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Team Member Section */}
-        <section className="relative py-16 md:py-24 bg-nexus-dark/50 backdrop-blur-sm">
-          <div className="w-full px-4 md:px-12 relative z-10">
-            <div className="max-w-4xl mx-auto w-full">
-              <div className="bg-black/40 border border-white/10 p-8 md:p-12 rounded-lg backdrop-blur-sm">
-                <h2 className="font-tesla font-bold text-2xl md:text-4xl text-white uppercase mb-6 md:mb-8 tracking-wide" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
-                  {t('team.member.name')}
-                </h2>
-                <div className="space-y-4 md:space-y-6">
-                  <p className="text-white/90 text-base md:text-lg font-light leading-relaxed" style={{ fontSize: 'clamp(1rem, 2vw, 1.125rem)' }}>
-                    {t('team.member.description')}
-                  </p>
-                  <p className="text-white/90 text-base md:text-lg font-light leading-relaxed" style={{ fontSize: 'clamp(1rem, 2vw, 1.125rem)' }}>
-                    {t('team.member.description2')}
-                  </p>
+            <div className="max-w-4xl mx-auto w-full px-2 md:px-0 relative">
+              {/* Blurry background box */}
+              <div className="absolute inset-0 bg-black/50 backdrop-blur-md rounded-lg -z-10" />
+              
+              {/* Content */}
+              <div className="relative z-10 p-8 md:p-12">
+                <h1 className="font-tesla font-bold text-3xl md:text-5xl text-white uppercase tracking-wide md:tracking-wider leading-[1.1] md:leading-[0.9] break-words mb-6 md:mb-8 text-center" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.875rem, 4vw, 3rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word', fontWeight: '700' }}>
+                  {t('team.title')}
+                </h1>
+                <div className="space-y-5 text-white text-lg md:text-xl font-medium leading-relaxed text-center max-w-3xl mx-auto" style={{ fontWeight: '500' }}>
+                  <p className="drop-shadow-lg">{t('team.intro')}</p>
+                  <p className="drop-shadow-lg">{t('team.intro2')}</p>
                 </div>
               </div>
             </div>

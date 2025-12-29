@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { ArrowDown } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const Hero: React.FC = () => {
+const Hero = forwardRef<HTMLElement>((props, ref) => {
   const { t } = useLanguage();
   
   return (
     <section 
+      ref={ref}
       className="relative min-h-screen flex items-center overflow-hidden"
       aria-labelledby="hero-title"
     >
@@ -51,6 +52,8 @@ const Hero: React.FC = () => {
 
     </section>
   );
-};
+});
+
+Hero.displayName = 'Hero';
 
 export default Hero;

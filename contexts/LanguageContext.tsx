@@ -54,6 +54,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'nav.articles': 'MAKALELER',
       'nav.defense': 'SAVUNMA',
       'nav.services': 'HİZMETLER',
+      'nav.team': 'EKİP',
       'nav.contact': 'İLETİŞİM',
       'nav.vision.mobile': 'Vizyon',
       'nav.technology.mobile': 'Teknoloji',
@@ -99,8 +100,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'tech.comingSoon': 'Çok Yakında...',
       'tech.oasis.name': 'OASIS',
       'tech.oasis.subtitle': 'DİKEY TARIM ENTEGRASYONU',
-      'tech.oasis.description': 'Kapalı devre sistemler. Foton başına maksimum verim. Şehir içi üretim için ultra-yoğun mimari ve dikey yapılanma.',
-      'tech.oasis.details': '%40 IŞIK TASARRUFU // 98% SU TASARRUFU',
+      'tech.oasis.description': 'OASIS, enerji kaybını oluşmadan ortadan kaldırmak üzere tasarlanmış, sistem-seviyesinde bir yetiştirme mimarisidir.\n\nIşık verimliliğini maksimize ederek doğal olarak dengeli mikroiklimler oluşturur ve yoğun iklim düzeltmesine ihtiyaç duymadan toplam enerji tüketimini %45\'e kadar azaltır.',
+      'tech.oasis.details': '%45 IŞIK TASARRUFU // 98% SU TASARRUFU',
       'tech.aether.name': 'AETHER',
       'tech.aether.subtitle': 'KONTROLLÜ SERA SİSTEMLERİ',
       'tech.aether.description': 'Topraksız tarım seraları. Hibrit ışıklandırma ve iklimlendirme algoritmaları ile yıl boyu standart, yüksek rekolte.',
@@ -233,12 +234,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'footer.copyright': '© 2026 NEXUS BIOTECHNOLOGIES. ISTANBUL.',
       
       // Team
-      'nav.team': 'EKİP',
       'team.title': 'EKİP',
-      'team.subtitle': 'Nexus Biotechnologies ekibini tanıyın.',
+      'team.subtitle': 'Nexus Biotechnologies Ekibi',
+      'team.intro': 'Pratik, ölçeklenebilir kontrollü ortam tarımı (CEA) teknolojisi geliştirmeye odaklanan, uygulamalı bir mühendislik ekibiyiz.',
+      'team.intro2': 'Emirhan Burul, biyoloji, donanım ve yazılımın kesişiminde, prototipten dağıtıma kadar sistem mimarisini uçtan uca sahiplenerek yürütme ve teknolojiyi yönetiyor.',
       'team.member.name': 'Emirhan Burul',
-      'team.member.description': 'Emirhan Burul, kontrollü ortam tarımını ölçeklenebilir ve güvenilir bir altyapıya dönüştürmeye odaklanan bir sistem mühendisi ve biyoteknoloji eğitimli bir yapımcıdır. Münih Teknik Üniversitesi\'nden biyoteknoloji geçmişi ve veri odaklı üretim sistemlerini tasarlama ve işletme konusundaki pratik deneyimiyle, biyoloji, donanım ve yazılımı bir araya getiriyor—algılama, otomasyon, iklim stratejisi ve operasyonel iş akışlarını tek bir tutarlı üründe birleştiriyor.',
-      'team.member.description2': 'Nexus Biotechnologies\'de Emirhan, teknik vizyonu ilkelerden yönetiyor: enerji ve operasyonel karmaşıklığı azaltırken tutarlılığı ve birim ekonomisini iyileştiren pratik sistemler inşa ediyor. Startup zihniyetiyle çalışıyor—hızlı gönderim, her şeyi ölçme, amansızca yineleme—ve iddialı fikirleri gerçek müşterilerin her gün çalıştırabileceği dağıtılabilir çözümlere dönüştürmeye takıntılı.',
+      'team.member.description': 'Emirhan Burul, biyoteknoloji altyapısına (Münih Teknik Üniversitesi) sahip bir sistem mühendisidir ve kontrollü ortam tarımı sistemlerini ilk prensiplerden yola çıkarak geliştirir. Biyoloji, donanım ve yazılımın kesişiminde çalışarak dikey entegre çözümler üretir; sistem seviyesinde karmaşıklığı azaltan, ölçeklenebilir, uzun ömürlü ve sahada uygulanabilir teknolojiler inşa etmeye odaklanır.',
     },
     en: {
       // Navbar
@@ -247,6 +248,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'nav.articles': 'ARTICLES',
       'nav.defense': 'DEFENSE',
       'nav.services': 'SERVICES',
+      'nav.team': 'TEAM',
       'nav.contact': 'CONTACT',
       'nav.vision.mobile': 'Vision',
       'nav.technology.mobile': 'Technology',
@@ -289,8 +291,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'tech.ai.layer5.desc': 'Ongoing evaluation of system performance. Operational intelligence that evolves and adapts over time.',
       'tech.oasis.name': 'OASIS',
       'tech.oasis.subtitle': 'VERTICAL FARMING INTEGRATION',
-      'tech.oasis.description': 'Closed-loop systems. Maximum efficiency per photon. Ultra-dense architecture and vertical structuring for urban production.',
-      'tech.oasis.details': '40% LIGHT SAVINGS // 98% WATER SAVINGS',
+      'tech.oasis.description': 'OASIS is a system-level growing architecture designed to eliminate energy waste before it occurs.\n\nBy maximizing light utilization and creating inherently stable microclimates, OASIS reduces total energy demand by up to 45%—without relying on heavy climate correction.',
+      'tech.oasis.details': '45% LIGHT SAVINGS // 98% WATER SAVINGS',
       'tech.aether.name': 'AETHER',
       'tech.aether.subtitle': 'CONTROLLED GREENHOUSE SYSTEMS',
       'tech.aether.description': 'Soilless farming greenhouses. Year-round standard, high yield with hybrid lighting and climate control algorithms.',
@@ -423,12 +425,12 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children, de
       'footer.copyright': '© 2026 NEXUS BIOTECHNOLOGIES. ISTANBUL.',
       
       // Team
-      'nav.team': 'TEAM',
       'team.title': 'TEAM',
-      'team.subtitle': 'Meet the Nexus Biotechnologies team.',
+      'team.subtitle': 'Nexus Biotechnologies Team',
+      'team.intro': 'We\'re a hands-on engineering team focused on building practical, scalable CEA technology.',
+      'team.intro2': 'Emirhan Burul leads execution and technology—owning the system architecture end-to-end, from prototype to deployment, at the intersection of biology, hardware, and software.',
       'team.member.name': 'Emirhan Burul',
-      'team.member.description': 'Emirhan Burul is a systems engineer and biotechnology-trained builder focused on turning controlled-environment agriculture into scalable, reliable infrastructure. With a biotech background from Technical University of Munich and hands-on experience designing and operating data-driven production systems, he bridges biology, hardware, and software—bringing together sensing, automation, climate strategy, and operational workflows into one coherent product.',
-      'team.member.description2': 'At Nexus Biotechnologies, Emirhan leads the technical vision from first principles: building practical systems that reduce energy and operational complexity while improving consistency and unit economics. He operates with a startup mindset—ship fast, measure everything, iterate relentlessly—and is obsessed with turning ambitious ideas into deployable solutions that real customers can run every day.',
+      'team.member.description': 'Emirhan Burul is a systems engineer with a biotechnology background (Technical University of Munich), building controlled-environment agriculture systems from first principles. Working at the intersection of biology, hardware, and software, he focuses on vertically integrated solutions that reduce complexity at the system level—designing technology that scales, endures, and is practical to operate in real-world conditions.',
     },
   };
 

@@ -18,8 +18,12 @@ const BASE_URL = import.meta.env.BASE_URL || '/';
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showPreloader, setShowPreloader] = useState(true);
+  const [backgroundFadeOpacity, setBackgroundFadeOpacity] = useState(0.45);
   const location = useLocation();
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const heroRef = useRef<HTMLElement | null>(null);
+  const manifestoRef = useRef<HTMLElement | null>(null);
+  const lenisRef = useRef<Lenis | null>(null);
 
   // Update HTML lang attribute based on route
   useEffect(() => {
@@ -42,13 +46,66 @@ const App: React.FC = () => {
       syncTouchLerp: 0.085, // Balanced touch lerp
     });
 
+    lenisRef.current = lenis;
+
+    // Function to update background fade opacity based on scroll position
+    const updateFadeOpacity = () => {
+      const hero = heroRef.current;
+      const manifesto = manifestoRef.current;
+      
+      if (!hero || !manifesto) {
+        return;
+      }
+
+      // Use window.scrollY for real-time scroll position (Lenis updates this)
+      // Reading in RAF loop ensures smooth, synchronized updates
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const heroTop = hero.offsetTop;
+      const manifestoTop = manifesto.offsetTop;
+      const manifestoHeight = manifesto.offsetHeight;
+      const manifestoMiddle = manifestoTop + manifestoHeight / 2;
+
+      // Calculate fade start (beginning of Hero) and fade end (middle of Manifesto)
+      const fadeStart = heroTop;
+      const fadeEnd = manifestoMiddle;
+
+      // Calculate progress (0 at fadeStart, 1 at fadeEnd)
+      let progress = 0;
+      if (scrollY >= fadeStart && scrollY <= fadeEnd) {
+        progress = (scrollY - fadeStart) / (fadeEnd - fadeStart);
+      } else if (scrollY > fadeEnd) {
+        progress = 1;
+      }
+
+      // Clamp progress between 0 and 1
+      progress = Math.max(0, Math.min(1, progress));
+
+      // Set opacity (0 = start fade at 45%, 1 = completely dark at 100%)
+      // We want to fade from 45% opacity to 100% opacity
+      // At progress 0: 45% opacity
+      // At progress 1: 100% opacity
+      // Formula: startOpacity + (endOpacity - startOpacity) * progress
+      const startOpacity = 0.45;
+      const endOpacity = 1.0;
+      const totalOpacity = startOpacity + (endOpacity - startOpacity) * progress;
+      setBackgroundFadeOpacity(totalOpacity);
+    };
+
     let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
+      // Update fade opacity immediately after Lenis updates scroll
+      // This ensures perfect synchronization with smooth scrolling
+      updateFadeOpacity();
       rafId = requestAnimationFrame(raf);
     }
 
     rafId = requestAnimationFrame(raf);
+
+    // Initial calculation after a short delay to ensure elements are rendered
+    const timeoutId = setTimeout(() => {
+      updateFadeOpacity();
+    }, 100);
 
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -67,14 +124,21 @@ const App: React.FC = () => {
 
     document.addEventListener('click', handleAnchorClick);
 
+    // Also listen to window resize to recalculate positions
+    window.addEventListener('resize', updateFadeOpacity, { passive: true });
+
     return () => {
+      clearTimeout(timeoutId);
       if (rafId) {
         cancelAnimationFrame(rafId);
       }
       lenis.destroy();
       document.removeEventListener('click', handleAnchorClick);
+      window.removeEventListener('resize', updateFadeOpacity);
     };
   }, []);
+
+
 
   // Performance: Setup and cleanup video event listeners properly
   useEffect(() => {
@@ -241,9 +305,17 @@ const App: React.FC = () => {
           </video>
         </div>
 
-        {/* Heavy Overlay for Dark Theme */}
-          {/* Performance: mix-blend-mode can be expensive - consider solid overlay if needed */}
-          <div className="absolute inset-0 bg-nexus-dark/45" />
+        {/* Dynamic Scroll-based Fade Overlay */}
+        {/* Fades from 45% opacity (at Hero start) to 100% opacity (at middle of Manifesto) */}
+        {/* No CSS transition - updates directly in RAF loop for real-time sync */}
+        <div 
+          className="absolute inset-0 bg-nexus-dark"
+          style={{ 
+            opacity: backgroundFadeOpacity,
+            pointerEvents: 'none',
+            willChange: 'opacity'
+          }} 
+        />
         
         {/* Performance: Removed mix-blend-overlay - expensive GPU compositing operation */}
         {/* Static Noise Overlay (Optimized - blend mode removed) */}
@@ -259,8 +331,8 @@ const App: React.FC = () => {
       <Navbar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
       
       <main className="flex-grow z-10 flex flex-col" role="main">
-        <Hero />
-        <Manifesto />
+        <Hero ref={heroRef} />
+        <Manifesto ref={manifestoRef} />
         <Technology />
         <Engineering />
         <DefenseSpace />

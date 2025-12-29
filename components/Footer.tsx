@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
       <div className="w-full px-4 md:px-12 flex flex-col md:flex-row items-center justify-between gap-4 py-4">
         <nav className="flex gap-6 text-sm md:text-sm text-white/60 font-display uppercase tracking-widest" aria-label="Footer navigation links" style={{ fontSize: '16px' }}>
           <a 
-            href={location.pathname.startsWith('/en') ? '/en/team' : '/ekip'}
+            href={location.pathname.startsWith('/en') ? '/en/team' : '/ekip'} 
             onClick={(e) => {
               e.preventDefault();
               navigate(location.pathname.startsWith('/en') ? '/en/team' : '/ekip');

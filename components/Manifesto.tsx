@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const Manifesto: React.FC = () => {
+const Manifesto = forwardRef<HTMLElement>((props, ref) => {
   const { t } = useLanguage();
   
   return (
-    <section id="vizyon" className="min-h-screen flex items-center py-24 relative overflow-hidden bg-transparent">
+    <section 
+      ref={ref}
+      id="vizyon" 
+      className="min-h-screen flex items-center py-24 relative overflow-hidden bg-transparent"
+    >
       <div className="w-full px-4 md:px-12 relative z-10 flex flex-col justify-center items-center h-full text-center">
         <h2 className="font-tesla font-bold text-2xl md:text-7xl uppercase text-white leading-tight md:leading-none tracking-wide md:tracking-wider mb-8 max-w-5xl mt-2 break-words px-2 md:px-0" style={{ fontFamily: 'Barlow', fontSize: 'clamp(1.5rem, 4vw, 4.5rem)', maxWidth: '100%', wordWrap: 'break-word', overflowWrap: 'break-word' }}>
           {t('manifesto.title')} <br />
@@ -36,6 +40,8 @@ const Manifesto: React.FC = () => {
       </div>
     </section>
   );
-};
+});
+
+Manifesto.displayName = 'Manifesto';
 
 export default Manifesto;
