@@ -8,6 +8,7 @@ import TurnkeyProjects from './pages/TurnkeyProjects';
 import DefenseProjects from './pages/DefenseProjects';
 import ConsultingProjectManagement from './pages/ConsultingProjectManagement';
 import Team from './pages/Team';
+import MiraSimulation from './pages/MiraSimulation';
 import ScrollToTop from './components/ScrollToTop';
 
 const rootElement = document.getElementById('root');
@@ -85,6 +86,8 @@ root.render(
             <Team />
           </LanguageProvider>
         } />
+        <Route path="/mira" element={<MiraSimulation lang="tr" />} />
+        <Route path="/en/mira" element={<MiraSimulation lang="en" />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
